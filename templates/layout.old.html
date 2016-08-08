@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8>
+<meta name="viewport" content="width=620">
+<title>Instant DR Demo</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+      {% block content %} <!--this leads to the external home.html file-->
+      {% endblock %}
+</div>
+<section id="wrapper">
+    <!--<header>
+      <h1>Drag and drop, automatic upload and process*</h1>
+      <p>*Current expert kappa: 0.8. Accepts jpg,png,tiff</p>
+    </header>-->
+
+<link rel="stylesheet" type=text/css href="{{ url_for('static', filename='style2.css') }}"> <!--cut out CSS into external for uploader-->
+
+<article>
+  <div id="holder"> <!--image holder-->
+  </div>
+    
+  <p id="upload" class="hidden"> <!--if shown, displays an upload button-->
+      <label>Drag & drop not supported, but you can still upload via this input field:<br><input type="file"></label></p>
+    
+  <p id="filereader">File API & FileReader API not supported</p> <!--if these are visible, js's broken-->
+  <p id="formdata">XHR2's FormData is not supported</p>
+  <p id="progress">XHR2's upload progress isn't supported</p>
+  <div id="result"> <!--results panel on right-->
+  </div>
+  <!--<p>Upload progress: <progress id="uploadprogress" min="0" max="100" value="0">0</progress></p>-->
+  <div id ="scale">
+  <h3>The DR severity scale:</h3>
+  <p> 0 - No DR </p>
+  <p> 1 - Mild </p>
+  <p> 2 - Moderate </p>
+  <p> 3 - Severe </p>
+  <p> 4 - Proliferative DR </p>
+</div>
+</article>
+
+<div id="explaintext">
+<p>This is a demo of real-time estimation of Diabetic Retinopathy severity. Drag and drop an image on the dashed line box to receive a result. The server is not intended to be used for batch processing and limits requests to 1 per second. The expected kappa agreement with experts is 0.80 and expected to be 0.85 as the latest code is updated. All results are processed on a GPU by a web server at the Media Lab. Please contact tswedish at mit dot edu for more info. Current file extensions supported: "png,tiff,jpg".</p>
+</div>
+
+<script>
+var results = document.getElementById('result'); //results bar on right
+results.innerHTML = '';
+
+//var ctx = document.createElement('canvas'); //will hold resized image
+var holder = document.getElementById('holder'), //image holder
+    tests = {
+      filereader: typeof FileReader != 'undefined',
+      dnd: 'draggable' in document.createElement('span'),
+      formdata: !!window.FormData,
+      progress: "upload" in new XMLHttpRequest
+    }, 
+    support = {
+      filereader: document.getElementById('filereader'),
+      formdata: document.getElementById('formdata'),
+      progress: document.getElementById('progress')
+    },
+    acceptedTypes = {
+      'image/png': true,
+      'image/jpeg': true,
+      'image/gif': true
+    },
+    progress = document.getElementById('uploadprogress'),
+    fileupload = document.getElementById('upload');
+    
+holder.innerHTML = "<p><br><br>Drag and Drop an Image to Start.</p>"
+    
+"filereader formdata progress".split(' ').forEach(function (api) {
+  if (tests[api] === false) {
+    support[api].className = 'fail';
+  } else {
+    // FFS. I could have done el.hidden = true, but IE doesn't support
+    // hidden, so I tried to create a polyfill that would extend the
+    // Element.prototype, but then IE10 doesn't even give me access
+    // to the Element object. Brilliant.
+    support[api].className = 'hidden';
+  }
+});
+
+function previewfile(file) {
+  if (tests.filereader === true && acceptedTypes[file.type] === true) {
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      var image = new Image();
+      image.src = event.target.result;
+      resizeImage(image) //resizes images to 512 on the longest side
+      //ctx.drawImage(image,0,0); //image is already resized
+      holder.innerHTML = '';
+      holder.appendChild(image);
+      //holder.appendChild(ctx);
+    };
+
+    reader.readAsDataURL(file); //already b64s it
+  }  else { //if the file isn't accepted
+    holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
+    console.log(file);
+  }
+}
+   
+function resizeImage(img){ //resizes images to 512 on the longest side
+    if(img.width > img.height){
+        img.width = "512";}
+    else{
+        img.height = "512";}
+    }
+
+function readfiles(files) {
+    //debugger;
+    var formData = tests.formdata ? new FormData() : null;
+    var b64 = new Array();
+    
+    for (var i = 0; i < files.length; i++) {
+      //if (tests.formdata) formData.append('file', files[i]);
+        if (tests.formdata){
+            b64[i] = window.btoa(files[i]);//base64 encode image
+            formData.append('b64', b64[i]);
+            previewfile(files[i]);
+        }
+      result.innerHTML = 'Uploading and Processing Image...';
+    }
+    
+    // now post a new XHR request
+    if (tests.formdata) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/upload');
+      xhr.onload = function() {
+        progress.value = progress.innerHTML = 100;
+      };
+      xhr.onreadystatechange = function() {
+            if(xhr.readyState == 4) {
+                 result.innerHTML = '<p>Estimated severity: '+xhr.responseText.slice(1,6)+'</p>';
+                 progress.value = progress.innerHTML = 0;
+            }
+      }
+
+      if (tests.progress) {
+        xhr.upload.onprogress = function (event) {
+          if (event.lengthComputable) {
+            var complete = (event.loaded / event.total * 100 | 0);
+            progress.value = progress.innerHTML = complete;
+          }
+        }
+      }
+
+      xhr.send(formData);
+    }
+
+    // on complete send a get request for result
+}
+
+if (tests.dnd) { 
+  holder.ondragover = function () { this.className = 'hover'; return false; };
+  holder.ondragend = function () { this.className = ''; return false; };
+  holder.ondrop = function (e) {
+    this.className = '';
+    e.preventDefault();
+    readfiles(e.dataTransfer.files);
+  }
+} else {
+  fileupload.className = 'hidden';
+  fileupload.querySelector('input').onchange = function () {
+    readfiles(this.files);
+  };
+}
+
+</script>
+</section>
+</body>
+</html>

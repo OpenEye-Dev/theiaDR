@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}
+Your Image History
+{% endblock %}
+
+{% block content %}
+
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='images.css') }}">
+
+<section id="wrapper">
+    <article>
+        <ul>
+            {% for i in range(n) %}  
+            <li><img src="{{imgs[i]}}" />
+                <p>
+                <br>Upload date: {{datetime[i]}}
+                <br>Diagnosis: {{diag[i]}}
+                </p>
+            </li>
+            {% endfor %}
+        </ul>
+    </article>
+</section>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8>
+<meta name="viewport" content="width=620">
+<title>Instant DR Demo</title>
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
+<!--the bootstrap is just a mess .____. and it doesn't even seem to be used-->
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}"> <!--fonts, themes, containers-->
+    
+</head>
+<body>
+<div class="container">
+    <div class="header">
+	   <h1><a href="/">Theia: Diabetic Retinopathy Severity Estimate Demo</a></h1>       
+    <p class="lead">{% block title %}{% endblock %}</p>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='useraccount.js') }}"></script>
+    <div class="login-container">
+        <div>
+        <a target="_blank" href="http://cameraculture.media.mit.edu/">Camera Culture</a> | 
+        {% if not token_logged_in() %}<a href="/api/v1/login">Login</a> | <a href="/api/v1/register">Register</a>{% endif %}
+        {% if token_logged_in() %}
+        <a target="_blank" href="/docs">Documentation</a> | 
+<a href="/api/v1/images">Your Images</a> | <a href="/api/v1/getKey">API Key</a> | <a href="/api/v1/logout">Logout</a>
+        </div>
+        <div>Hi {{ get_name() }}!</div>
+        {% endif %}
+    </div>
+</div>
+
+{% block content %}
+{% endblock %}
+    
+</body>
+</html>

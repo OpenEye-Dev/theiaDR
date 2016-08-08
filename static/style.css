@@ -1,0 +1,272 @@
+html
+{
+    min-height: 100%;
+}
+body
+/*I can't stand the font*/
+{
+    font-family: "Trebuchet MS", Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    margin: 0 0 0 0;
+    background: #FFFFFF;
+    background: -moz-linear-gradient(top, #A9A9A9 0%, #FFFFFF 15%, #FFFFFF 20%);
+    /* FF3.6-15 */
+    
+    background: -webkit-linear-gradient(top, #A9A9A9 0%, #FFFFFF 15%, #FFFFFF 20%);
+    /* Chrome10-25,Safari5.1-6 */
+    
+    background: linear-gradient(to bottom, #A9A9A9 0%, #FFFFFF 15%, #FFFFFF 20%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    background-repeat: no-repeat;
+}
+
+.wrapword{
+white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+white-space: -webkit-pre-wrap; /*Chrome & Safari */ 
+white-space: -pre-wrap;      /* Opera 4-6 */
+white-space: -o-pre-wrap;    /* Opera 7 */
+white-space: pre-wrap;       /* css-3 */
+word-wrap: break-word;       /* Internet Explorer 5.5+ */
+word-break: break-all;
+white-space: normal;
+}
+
+a,
+h1,
+h2 {
+    color: #030;
+}
+h1,
+h2 {
+    font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', sans-serif;
+    margin: 0;
+    font-weight: normal;
+}
+h1 {
+    border-bottom: 2px solid #030;
+}
+/*FINALLY FOUND THIS STUPID LINE*/
+
+h2 {
+    font-size: 1.2em;
+}
+a {
+    text-decoration: none;
+}
+a:hover {
+    color: #339933
+}
+/*I want a nice background for header eventually*/
+/*for nav bar at the moment*/
+
+.login-container {
+    margin: 1em 1em 0 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.login-container div {
+    padding: 4px;
+    text-align: right;
+    font-size: 0.8em;
+}
+.register-container {
+    width: 250px;
+    display: inline-block;
+    float: left;
+    padding: 4px;
+}
+.register-container div div{
+    text-align: right;
+    font-size: .9em;
+    height: 2em;
+    margin-top: 5px;
+}
+.register input {
+    margin: 0 0 5px 5px;
+    padding: 3px 10px 3px 10px;
+    font-size: 12px;
+    border-radius: 10px;
+    border-color: #e3f5ab;
+    border-style: solid;
+    border: 1;
+}
+.register label {
+    font-size: 0.8em;
+    display: inline;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    
+    display: block;
+    text-align: left;
+    height: 1.5em;
+    width: 90px;
+    background-color: #fff;
+}
+input[type="email"]:focus,
+input[type="text"]:focus,
+input[type="password"]:focus {
+    background-color: #e3f5ab;
+    outline: none;
+}
+input[type="submit"],
+input[type="button"] {
+    text-align: center;
+    height: 30px;
+    width: 100px;
+    background-color: #e3f5ab;
+    outline: 0;
+    color: #999;
+}
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background-color: #fff;
+    cursor: pointer;
+}
+.errormsg {
+    display: block;
+}
+.header {
+    margin: 5em 3em 1em 3em;
+}
+.page {
+    margin: 2em auto;
+    width: 35em;
+    border: 5px solid #ccc;
+    padding: 0.8em;
+    background: grey;
+}
+.entries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.entries li {
+    margin: 0.8em 1.2em;
+}
+.entries li h2 {
+    margin-left: -1em;
+}
+.add-entry {
+    font-size: 0.9em;
+    border-bottom: 1px solid #ccc;
+}
+.add-entry dl {
+    font-weight: bold;
+}
+.metanav {
+    text-align: right;
+    font-size: 0.8em;
+    padding: 0.3em;
+    margin-bottom: 1em;
+    background: #fafafa;
+}
+.flash {
+    background: #cee5F5;
+    padding: 0.5em;
+    border: 1px solid #aacbe2;
+}
+.error {
+    background: #f0d6d6;
+    padding: 0.5em;
+}
+#wrapper {
+    margin: 50px;
+}
+/*page margin 50px*/
+
+#holder {
+    float: left;
+    border: 10px dashed #ccc;
+    width: 512px;
+    min-height: 350px;
+    margin: 0px auto;
+    margin-right: 30px;
+    position: relative;
+    text-align: center;
+    color: #ccc;
+}
+#holder.hover {
+    border: 10px dashed #6EE866;
+}
+#holder img {
+    display: block;
+    margin: 10px auto;
+}
+#holder p {
+    margin: 10px;
+    font-size: 3em;
+}
+#upload {
+    position: absolute;
+    left: 0;
+    top: 70%;
+    width: 100%;
+    display: inline-block;
+    outline: none;
+}
+#upload #clickupload {
+    height: 0;
+    width: 0;
+    outline: inherit;
+}
+#upload #container {
+    border: 3px solid #ccc;
+    border-radius: 10px;
+    padding: 5px;
+    position: absolute;
+    width: 45%;
+    left: 27.5%;
+    display: block;
+    outline: inherit;
+}
+#upload #container:hover {
+    color: #B9E132;
+    border-color: #B9E132;
+}
+#upload label:hover,
+#upload:hover {
+    cursor: pointer;
+}
+#scale {
+    height: 350px;
+}
+#result {
+    font-size: 200%;
+}
+#explaintext p {
+    width: 80%;
+    margin: 1em 0;
+    display: inline-block;
+}
+progress {
+    width: 512px;
+    display: inline-block;
+    position: relative;
+}
+progress::-webkit-progress-bar {
+    width: 400px;
+    height: 30px;
+    display: inline-block;
+    position: relative;
+}
+progress::-moz-progress-bar {
+    width: 400px;
+    height: 30px;
+    display: inline-block;
+    position: relative;
+}
+article {
+    min-height: 300px
+}
+.fail {
+    background: #c00;
+    padding: 2px;
+    color: #fff;
+}
+.hidden {
+    display: none !important;
+}
+<!--means can be overriden-->

@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<section id="wrapper">
+<article>
+You have entered a wrong username or password. Please try again.
+    
+<div class="login-container">
+    <form action="/login" method="POST" onsubmit="return submit(this)">
+        <div class="login">
+        <input type="text" name="uid" placeholder="Username">
+        <input type="password" name="password" placeholder="Password">
+        <input type="submit" value="Login">
+        </div>
+    </form>
+</div>
+</article>
+</section>
+{% endblock %}

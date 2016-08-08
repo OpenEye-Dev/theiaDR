@@ -1,0 +1,188 @@
+{% extends "layout.html" %}
+{% block title %}
+Real-Time Image Diagnosis
+{% endblock %}
+
+
+{% block content %}
+<section id="wrapper">
+
+    <article>
+{% if token_logged_in() %} 
+        <div id="holder">
+            <!--image holder-->
+		
+		<input type="file" accept="image/*" capture="camera"  id="clickupload">
+		<button onclick="uploadimage()">upload</button>
+            <p>
+                <br>
+                <br></p>
+            <div id="upload">
+                <!--if shown, displays an upload button-->
+
+		<!--<input type="file" accept="image/*" capture="camera" id="clickupload">-->
+                <br>
+                <div class="hidden">
+                <div id="container">
+                    
+                    <label for="clickupload">Alternatively, Select a File</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p id="filereader">File API & FileReader API not supported</p>
+        <!--if these are visible, js's broken-->
+        <p id="formdata">XHR2's FormData is not supported</p>
+        <p id="progress">XHR2's upload progress isn't supported</p>
+        <div id="result">
+            <!--results panel on right-->
+        </div>
+        <div id="scale">
+            <h3>The DR severity scale:</h3>
+            <p> 0 - No DR </p>
+            <p> 1 - Mild </p>
+            <p> 2 - Moderate </p>
+            <p> 3 - Severe </p>
+            <p> 4 - Proliferative DR </p>
+        </div>
+    </article>
+    <div id="explaintext">
+        <p>Upload progress:
+            <br>
+            <progress id="uploadprogress" min="0" max="100" value="0">0</progress>
+        </p>
+        <!--progress bar-->
+        <p>All results are processed on a GPU by a web server at the Media Lab. Please contact tswedish at mit dot edu for more info. Current file extensions supported: "png,tiff,jpg".</p>
+    </div>
+{% endif %}
+    <!--external script defines functions; inline script gets elements from client-->
+    <script>
+var results = document.getElementById('result');
+results.innerHTML = '<-- Drag and drop an image to start.';
+var holder = document.getElementById('holder'),
+    tests = {
+      filereader: typeof FileReader != 'undefined',
+      dnd: 'draggable' in document.createElement('span'),
+      formdata: !!window.FormData,
+      progress: "upload" in new XMLHttpRequest
+    }, 
+    support = {
+      filereader: document.getElementById('filereader'),
+      formdata: document.getElementById('formdata'),
+      progress: document.getElementById('progress')
+    },
+    acceptedTypes = {
+      'image/png': true,
+      'image/jpeg': true,
+      'image/gif': true
+    },
+    progress = document.getElementById('uploadprogress'),
+    fileupload = document.getElementById('upload');
+
+"filereader formdata progress".split(' ').forEach(function (api) {
+  if (tests[api] === false) {
+    support[api].className = 'fail';
+  } else {
+    // FFS. I could have done el.hidden = true, but IE doesn't support
+    // hidden, so I tried to create a polyfill that would extend the
+    // Element.prototype, but then IE10 doesn't even give me access
+    // to the Element object. Brilliant.
+    support[api].className = 'hidden';
+ } 
+});
+
+function previewfile(file) {
+  if (tests.filereader === true && acceptedTypes[file.type] === true) {
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      var image = new Image();
+      image.src = event.target.result;
+      image.width = 500; // a fake resize
+      holder.innerHTML = '';
+      holder.appendChild(image);
+    };
+
+    reader.readAsDataURL(file);
+  }  else {
+    holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
+    console.log(file);
+  }
+}
+
+function readfiles(files) {
+    //debugger;
+    var formData = tests.formdata ? new FormData() : null;
+    for (var i = 0; i < files.length; i++) {
+      if (tests.formdata) {
+		formData.append('ID','demo');
+		formData.append('file', files[i]);
+	}
+      previewfile(files[i]);
+      result.innerHTML = 'Uploading and Processing Image...';
+    }
+
+    // now post a new XHR request
+    if (tests.formdata) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/v1/uploadImage');
+      xhr.onload = function() {
+        progress.value = progress.innerHTML = 100;
+      };
+      xhr.onreadystatechange = function() {
+            if(xhr.readyState == 4) {
+                var results = JSON.parse(xhr.responseText);
+                if(results.database_id===0){ // not logged in
+                    result.innerHTML = 'Please authenticate to access API.'+'</p>';
+                }
+                else{
+                    result.innerHTML = '<p>Estimated severity: '+ results.grade.slice(1,6)+'</p>';
+                }
+                 progress.value = progress.innerHTML = 0;
+            } else if (xhr.readyState == 0) {
+                    result.innerHTML = '<p> Please login or use API key </p>';
+            }
+      }
+      xhr.onerror = function() { result.innerHTML = '<p> Please login or use API key </p>'; };
+      if (tests.progress) {
+        xhr.upload.onprogress = function (event) {
+          if (event.lengthComputable) {
+            var complete = (event.loaded / event.total * 100 | 0);
+            progress.value = progress.innerHTML = complete;
+          }
+        }
+      }
+
+      xhr.send(formData);
+    }
+
+    // on complete send a get request for result
+}
+
+
+function uploadimage()   
+{
+var inputEl = document.getElementById("clickupload");
+readfiles(inputEl.files)
+}
+
+if (tests.dnd) { //if (tests.dnd)  
+  holder.ondragover = function () { this.className = 'hover'; return false; };
+  holder.ondragend = function () { this.className = ''; return false; };
+  holder.ondrop = function (e) {
+    this.className = '';
+    e.preventDefault();
+    readfiles(e.dataTransfer.files);
+  }
+} else {
+  var inputEl = document.getElementById("clickupload");
+  //fileupload.className = 'hidden';
+  //fileupload.querySelector('input').onchange = function () {
+  inputEl.onchange = function() {
+    readfiles(this.files);
+  }
+}
+
+</script>
+</section>
+{% endblock %}
