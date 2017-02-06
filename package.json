@@ -1,0 +1,13 @@
+{
+  "name": "cs193_app",
+  "version": "1.0.0",
+  "description": "Cloud Image Grading API Server",
+  "author": "Dhruv Joshi <dhruv.joshi.1989@gmail.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}
