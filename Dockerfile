@@ -1,15 +1,7 @@
+# http://blog.abhinav.ca/blog/2014/06/17/develop-a-nodejs-app-with-docker/
 FROM node:boron
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Set the working directory
+WORKDIR   /src
 
-# Install app dependencies
-COPY package.json /usr/src/app/
-RUN npm install
-
-# Bundle app source
-COPY . /usr/src/app
-
-EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD ["/bin/bash"]
