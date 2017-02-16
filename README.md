@@ -10,7 +10,10 @@ We endeavour to build a highly scalable platform for Medical image grading in th
 * `git clone <this-repo>`
 * `cd /path/to/repo`
 * Build the container using `docker build <your-name>/<container-name> .`
-* Run the container with an interactive shell using `docker run -i -t -p 8080:8080 -v `pwd`:/src <your-name>/<container-name>`
+* Run the container with an interactive shell using `docker run -i -t --rm -p 8080:8080 -v `pwd`:/src <your-name>/<container-name>`
+* Now you have a fresh BASH shell dedicated to your development. Run `npm install` to install the modules in node (which get saved locally on disk)
+* Install nodemon using `npm install nodemon`
+* Run `nodemon` to start the server on localhost:8080, it will automatically pick up changes
 
 # References
 
