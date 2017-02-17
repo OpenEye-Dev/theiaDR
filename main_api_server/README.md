@@ -1,7 +1,7 @@
 # Quickstart
 * `git clone <this-repo>`
 * `cd /path/to/repo`
-* Build the container using `docker build <your-name>/<container-name> .`
+* Build the container using `docker build -t <your-name>/<container-name> .`
 * Run the container with an interactive shell using ```docker run -i -t --rm -p 8080:8080 -v `pwd`:/src <your-name>/<container-name>```
 * Now you have a fresh BASH shell dedicated to your development. Run `npm install` to install the modules in node (which get saved locally on disk)
 * Install nodemon using `npm install nodemon`
