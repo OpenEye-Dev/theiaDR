@@ -6,6 +6,9 @@
 * Now you have a fresh BASH shell dedicated to your development. Run `source runserver.sh` to install dependencies and start the server on port 8080
 * Navigate to localhost:8080 to see ```{'message':'OK'}``` indicating it's working fine. The server will automatically pick up changes as you make changes to files in this directory. The bash shell opened up will show you what's going on.
 
+# Tests
+* Test the login API using the command ```curl -H "Content-type:application/json" -X POST --data '{"username":"arvind@myapp.com", "password" : "pass123"}'  http://localhost:8080/login```
+
 # References
 
 * [https://nodejs.org/en/docs/guides/nodejs-docker-webapp/](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)
