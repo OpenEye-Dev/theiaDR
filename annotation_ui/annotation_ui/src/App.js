@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import ImgUploader from './components/ImgUploader.js';
+import ImgUploader from './components/ImgUploader';
 
 class App extends Component {
   render() {
@@ -9,7 +9,6 @@ class App extends Component {
         <div className="App-header">
           <h2>Annotation UI</h2>
         </div>
-
         <ImgUploader />
       </div>
     );
