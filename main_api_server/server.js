@@ -50,11 +50,9 @@ app.get('/', function (req, res) {
 });
 
 // login stuff..
-/*
 app.get('/login', function (req, res) {
   res.send('Login is only allowed with a POST request.');
 });
-*/
 
 app.post('/login', auth.login);
 
