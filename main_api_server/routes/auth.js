@@ -1,15 +1,20 @@
 // SOURCE: http://thejackalofjavascript.com/architecting-a-restful-node-js-app/
 var jwt = require('jwt-simple');
+var logger = require('morgan');
+
+// just testing..
+var allowed_usernames = {'admni':'padme', 'stanfoo':'stanbar'}
  
 var auth = {
  
-  login: function(req, res) {
- 
+  login: function(req, res) { 
     var username = req.body.username || '';
     var password = req.body.password || '';
+
+    console.log('username:' + username);
  
-    if (username == '' || password == '') {
-      res.status(401);
+    if (!(username in allowed_usernames) || !(password == allowed_usernames[username])) {
+	  res.status(401);
       res.json({
         "status": 401,
         "message": "Invalid credentials"
@@ -42,7 +47,7 @@ var auth = {
   validate: function(username, password) {
     // spoofing the DB response for simplicity
     var dbUserObj = { // spoofing a userobject from the DB. 
-      name: 'arvind',
+      name: 'stanfordkid',
       role: 'admin',
       username: 'arvind@myapp.com'
     };
@@ -53,9 +58,9 @@ var auth = {
   validateUser: function(username) {
     // spoofing the DB response for simplicity
     var dbUserObj = { // spoofing a userobject from the DB. 
-      name: 'arvind',
+      name: 'stanfordkid',
       role: 'admin',
-      username: 'arvind@myapp.com'
+      username: 'stan@ford.com'
     };
  
     return dbUserObj;
@@ -64,7 +69,7 @@ var auth = {
  
 // private method
 function genToken(user) {
-  var expires = expiresIn(7); // 7 days
+  var expires = expiresIn(1); // 1 day
   var token = jwt.encode({
     exp: expires
   }, require('../config/secret')());
