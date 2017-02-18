@@ -13,7 +13,8 @@ var auth = {
 
     console.log('username:' + username);
  
-    if (!(username in allowed_usernames) || !(password == allowed_usernames[username])) {
+    if (username == '' || password == '') {
+      // simple check to see if fields are empty - this should also be done at the frontend
 	  res.status(401);
       res.json({
         "status": 401,
@@ -26,6 +27,7 @@ var auth = {
     var dbUserObj = auth.validate(username, password);
    
     if (!dbUserObj) { // If authentication fails, we send a 401 back
+      // TODO: Query a database to see if this works
       res.status(401);
       res.json({
         "status": 401,
