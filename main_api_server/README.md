@@ -16,3 +16,4 @@
 * [https://docs.docker.com/engine/tutorials/dockervolumes/](https://docs.docker.com/engine/tutorials/dockervolumes/)
 * [http://thejackalofjavascript.com/architecting-a-restful-node-js-app/](http://thejackalofjavascript.com/architecting-a-restful-node-js-app/)
 * [https://crackstation.net/hashing-security.htm](https://crackstation.net/hashing-security.htm)
+* [https://www.ctl.io/developers/blog/post/build-user-authentication-with-node-js-express-passport-and-mongodb](https://www.ctl.io/developers/blog/post/build-user-authentication-with-node-js-express-passport-and-mongodb)
