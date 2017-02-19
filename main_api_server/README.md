@@ -8,10 +8,10 @@
 * Now you have a new BASH shell dedicated to your development. Check if the mongodb connection is working by running `curl $MONGO_PORT_27017_TCP_ADDR:27017`. This would try to connect to the mongodb server over HTTP. If everything is fine, you would get a reply saying ```It looks like you are trying to access MongoDB over HTTP on the native driver port.```
 * NOTE: To find the IP address of the node container, run ```ip addr show eth0 | grep inet```
 * Run `source runserver.sh` to install dependencies and start the server on port 8080
-* Navigate to localhost:8080 to see ```{'message':'OK'}``` indicating it's working fine. The server will automatically pick up changes as you make changes to files in this directory. The bash shell opened up will show you what's going on.
+* Navigate to localhost:8080 to see ```Welcome to the Server. The login page will go here.``` indicating it's working fine. The server will automatically pick up changes as you make changes to files in this directory. The bash shell opened up will show you what's going on.
 
 # Tests
-* Test the login API using the command ```curl -H "Content-type:application/json" -X POST --data '{"username":"arvind@myapp.com", "password" : "pass123"}'  http://localhost:8080/login```
+* Test the login API using the command ```curl -H "Content-type:application/json" -X POST --data '{"username":"something", "password" : "something"}'  http://localhost:8080/login```
 
 # References
 
@@ -20,3 +20,4 @@
 * [https://docs.docker.com/engine/tutorials/dockervolumes/](https://docs.docker.com/engine/tutorials/dockervolumes/)
 * [http://thejackalofjavascript.com/architecting-a-restful-node-js-app/](http://thejackalofjavascript.com/architecting-a-restful-node-js-app/)
 * [https://crackstation.net/hashing-security.htm](https://crackstation.net/hashing-security.htm)
+* [http://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach](http://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach)
