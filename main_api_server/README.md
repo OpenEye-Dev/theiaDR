@@ -12,6 +12,7 @@
 
 # Tests
 * Test the login API using the command ```curl -H "Content-type:application/json" -X POST --data '{"username":"something", "password" : "something"}'  http://localhost:8080/login```
+* You can access the mongodb shell from the running container by `docker exec -it mongo bash`
 
 # References
 

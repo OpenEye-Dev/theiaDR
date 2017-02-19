@@ -3,9 +3,11 @@
  * API SERVER 1
 ----------------------------------------------------------------
  * Author: Dhruv Joshi
+ *
  * References:
  * 1. https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
- * 2. 
+ * 2. http://thejackalofjavascript.com/architecting-a-restful-node-js-app/
+ * 3. https://www.ctl.io/developers/blog/post/build-user-authentication-with-node-js-express-passport-and-mongodb
  */
 
 const express = require('express');
@@ -17,9 +19,78 @@ var bodyParser  = require('body-parser');
 var logger      = require('morgan');
 var mongoose    = require('mongoose');
 var jwt         = require('jsonwebtoken'); // used to create, sign, and verify tokens
-// var config = require('./config'); // get our config file
-// var User   = require('./app/models/user'); // get our mongoose model
-var auth = require('./routes/auth.js');
+var session     = require('express-session');
+var passport    = require('passport');
+var exphbs      = require('express-handlebars');
+var auth        = require('./routes/auth.js');
+var bcrypt      = require('bcryptjs');
+var LocalStrategy = require('passport-local');
+
+// ============== PASSPORT/LOGIN STUFF =================
+// Stuff for user authentication ref [2]
+var config = require('./config/mongoConfig.js'), //config file contains all tokens and other private info
+    funct = require('./signinfunctions.js'); //funct file contains our helper functions for our Passport and database work
+
+app.use(session({secret: 'supernova', saveUninitialized: true, resave: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport session setup.
+passport.serializeUser(function(user, done) {
+  console.log("serializing " + user.username);
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  console.log("deserializing " + obj);
+  done(null, obj);
+});
+
+// Use the LocalStrategy within Passport to login/"signin" users.
+passport.use('local-signin', new LocalStrategy(
+  {passReqToCallback : true}, //allows us to pass back the request to the callback
+  function(req, username, password, done) {
+    funct.localAuth(username, password)
+    .then(function (user) {
+      if (user) {
+        console.log("LOGGED IN AS: " + user.username);
+        req.session.success = 'You are successfully logged in ' + user.username + '!';
+        done(null, user);
+      }
+      if (!user) {
+        console.log("COULD NOT LOG IN");
+        req.session.error = 'Could not log user in. Please try again.'; //inform user could not log them in
+        done(null, user);
+      }
+    })
+    .fail(function (err){
+      console.log('There has been an error! It is => ' + err.body);
+    });
+  }
+));
+// Use the LocalStrategy within Passport to register/"signup" users.
+passport.use('local-signup', new LocalStrategy(
+  {passReqToCallback : true}, //allows us to pass back the request to the callback
+  function(req, username, password, done) {
+    funct.localReg(username, password)
+    .then(function (user) {
+      if (user) {
+        console.log("REGISTERED: " + user.username);
+        req.session.success = 'You are successfully registered and logged in ' + user.username + '!';
+        done(null, user);
+      }
+      if (!user) {
+        console.log("COULD NOT REGISTER");
+        req.session.error = 'That username is already in use, please try a different one.'; //inform user could not log them in
+        done(null, user);
+      }
+    })
+    .fail(function (err){
+      console.log(err.body);
+    });
+  }
+));
+// ================================================
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(logger('dev'));
@@ -40,21 +111,56 @@ app.all('/*', function(req, res, next) {
   }
 });
 
+// Configure express to use handlebars templates
+var hbs = exphbs.create({
+    defaultLayout: 'main', //we will be creating this layout shortly
+});
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
 // Constants
 const PORT = 8080;
 
-// ROUTING
-// basic test route
-app.get('/', function (req, res) {
-  res.send("Welcome to the Server. The login page will go here.");
+//===============ROUTES=================
+//displays our homepage
+app.get('/', function(req, res){
+  res.render('home', {user: req.user});
 });
 
-// login stuff..
-app.get('/login', function (req, res) {
-  res.send('Login is only allowed with a POST request.');
+//displays our signup page
+app.get('/signin', function(req, res){
+  res.render('signin');
 });
 
-app.post('/login', auth.login);
+//sends the request through our local signup strategy, and if successful takes user to homepage, otherwise returns then to signin page
+app.post('/local-reg', passport.authenticate('local-signup', {
+  successRedirect: '/',
+  failureRedirect: '/signin'
+  })
+);
+
+//sends the request through our local login/signin strategy, and if successful takes user to homepage, otherwise returns then to signin page
+app.post('/login', passport.authenticate('local-signin', {
+  successRedirect: '/',
+  failureRedirect: '/signin'
+  })
+);
+
+//logs user out of site, deleting them from the session, and returns to homepage
+app.get('/logout', function(req, res){
+  var name = req.user.username;
+  console.log("LOGGING OUT " + req.user.username)
+  req.logout();
+  res.redirect('/');
+  req.session.notice = "You have successfully been logged out " + name + "!";
+});
+
+// token generation stuff
+app.get('/get-token', function (req, res) {
+  res.send('This is only allowed with a POST request.');
+});
+
+app.post('/get-token', auth.login);
 
 
 // get an instance of the router for api routes
