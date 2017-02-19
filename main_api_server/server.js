@@ -31,6 +31,10 @@ var LocalStrategy = require('passport-local');
 var config = require('./config/mongoConfig.js'), //config file contains all tokens and other private info
     funct = require('./signinfunctions.js'); //funct file contains our helper functions for our Passport and database work
 
+app.use(session({secret: 'supernova', saveUninitialized: true, resave: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Passport session setup.
 passport.serializeUser(function(user, done) {
   console.log("serializing " + user.username);
@@ -60,7 +64,7 @@ passport.use('local-signin', new LocalStrategy(
       }
     })
     .fail(function (err){
-      console.log(err.body);
+      console.log('There has been an error! It is => ' + err.body);
     });
   }
 ));
