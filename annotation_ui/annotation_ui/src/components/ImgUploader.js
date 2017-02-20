@@ -33,8 +33,7 @@ class ImgUploader extends Component {
         event.preventDefault();
         let file = this.state.file
         if(file !== null && file.type.match('image.*')){
-            console.log("Uploaded!");
-            console.log(this.state.file.name);
+            console.log("Uploaded: " + this.state.file.name);
 
             $.ajax({
                 url: "http://10.34.64.114:8080/api/v1/grade",
@@ -46,7 +45,6 @@ class ImgUploader extends Component {
                     alert(data);
                 }
             });
-
 
         }else{
             alert("Choose an image first!");
