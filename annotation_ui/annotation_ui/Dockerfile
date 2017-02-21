@@ -1,6 +1,6 @@
 FROM node:boron
 
-ENV BASE_PATH /spare/local/ui_annotation
+ENV BASE_PATH /usr/local/ui_annotation
 
 # Create app directory
 RUN mkdir -p $BASE_PATH/src
@@ -12,8 +12,8 @@ COPY package.json $BASE_PATH
 RUN npm install
 
 # Bundle app source
-VOLUME ./src $BASE_PATH/src
-VOLUME ./public $BASE_PATH/public
+COPY ./src $BASE_PATH/src
+COPY ./public $BASE_PATH/public
 
 EXPOSE 8080
 CMD [ "npm", "start" ]
