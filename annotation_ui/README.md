@@ -8,13 +8,6 @@
 * Navigate to the ip address found two steps earlier on port 3000 to see ```Annotation UI``` and try to upload a picture.
 * The traffic of the POST request can be monitored from `Inspect Page > Network` of your favourite browser.
 
-# Quick Deployment: Repo clone, container build and run
-* The purpose of this script is to clone the whole project repo, then specified a subdirectory (called module) a docker container will be build and run with a bash terminal.<br>
-Example: `./genContainer annotation_ui`
-* TODO: this script will be made as general as possible in order to be used for all the other modules.
-* TODO: add boolean option for development, true: run container with interactive terminal bash, false (default): run CMDs found in Dockerfile.
-* TODO: keep record of tags and increase tag number upon successful rerun. At the moment is giving tag 'v1' as default.
-
 # Development history
 * This project was initially bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
  And you can find the most recent version of the create-react-app guide [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
