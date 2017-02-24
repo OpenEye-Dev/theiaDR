@@ -37,6 +37,7 @@ class ImgUploader extends Component {
 
             $.ajax({
                 url: "http://10.34.64.114:8080/api/v1/grade",
+                //url: "http://localhost:8081/upload",
                 data: file.data,
                 processData: false,
                 contentType: false,
