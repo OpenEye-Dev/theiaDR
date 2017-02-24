@@ -1,6 +1,7 @@
 FROM node:boron
 
-ENV BASE_PATH /usr/local/ui_annotation
+ARG module
+ENV BASE_PATH /usr/local/$module
 
 # Create app directory
 RUN mkdir -p $BASE_PATH/src
