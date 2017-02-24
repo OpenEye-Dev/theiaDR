@@ -1,13 +1,13 @@
 # Image Grading API for Medical Images
 Course Project for CS193S 
 
-Authors: Louis Brion, Marco Monella, Dhruv Joshi
+Authors: Louis Brion, Marco Montalto Monella, Dhruv Joshi
 
 # Purpose
 We endeavour to build a highly scalable platform for Medical image grading in the cloud. This system would be engineered to scale horizontally and vertically, and in the number of services that can be provided (in this case, the system works for diabetic retinopathy images, but can be extended to other use medical cases as well (radiology).
 
 # Module container generation and deployment
-* The purpose of this `genContainer.sh` is to clone the whole project repo, with one arg, the subdirectory (called module). If not specified, an interactive menu will pop be shown in order to choose a module. A docker container will be build and run with a bash terminal.<br>
+* The purpose of this `genContainer.sh` is to clone the whole project repo, with one arg, the subdirectory (called module). If not specified, an interactive menu will be shown in order to choose a module. A docker container will be build and run with a bash terminal.<br>
 Example: `./genContainer.sh annotation_ui`
 * TODO: this script will be made as general as possible in order to be used for all the other modules.
 * TODO: add boolean option for development, true: run container with interactive terminal bash, false (default): run CMDs found in Dockerfile.
