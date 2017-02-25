@@ -40,6 +40,9 @@ gcloud container clusters list
 
 * Create a service object [2] that exposes the deployment using `kubectl expose deployment <KUBERNETES_DEPLOYMENT_NAME> --type=LoadBalancer --name=<SERVICE_NAME>`. Now to find the external IP of the system (or whether one has been created), use `kubectl get services <SERVICE_NAME>` and look at the *EXTERNAL-IP*.
 
+## Notes
+* If you stop the VMs part of a cluster manually from the Compute Engine page, they get re-spawned and they will keep running automatically. This is __not__ the correct way of stopping them.
+* If you want to delete the cluster use: `gcloud container clusters delete <cluster-name> --zone <zone-of-the-cluster>`
 
 # References
 1. [http://christopher5106.github.io/continous/deployment/2016/05/02/deploy-instantly-from-your-host-to-AWS-EC2-and-Google-Cloud-with-kubernetes.html](http://christopher5106.github.io/continous/deployment/2016/05/02/deploy-instantly-from-your-host-to-AWS-EC2-and-Google-Cloud-with-kubernetes.html)
