@@ -1,4 +1,4 @@
- """
+"""
    BASIC IMAGE CLASSIFICATION MODEL TRAINING IN TENSORFLOW
    ---------------------------------------------------------------
    AUTHOR: Dhruv Joshi
@@ -9,22 +9,24 @@
 
    REFERENCES:
    * http://stackoverflow.com/questions/37340129/tensorflow-training-on-my-own-image
- """
- import util
- import tensorflow as tf
+"""
+import util
+import tensorflow as tf
 
- # Constants
- TRAINING_DATA_LOCATION = 'training_data/'
- IMAGE_SIZE = 512	# assume square image - this is side size in pixels
- BATCH_SIZE = 8
- IMAGE_CHANNELS = 3
+# Constants
+TRAINING_DATA_LOCATION = 'training_data/'
+IMAGE_SIZE = 512	# assume square image - this is side size in pixels
+BATCH_SIZE = 8
+IMAGE_CHANNELS = 3
 
- # Get training labels
- tlabels = util.get_labels()
+# Get training labels
+tlabels = util.get_labels()
+tlabels = [(x, tlabels[x]) for x in tlabels.keys()]
 
 # Generate training batch filebane pipeline
 # step 1: get filenames string list
 filenames = [x[0] for x in tlabels]
+labels = [x[1] for x in tlabels]
 
 # step 2: generate queue
 filename_queue = tf.train.string_input_producer(filenames)

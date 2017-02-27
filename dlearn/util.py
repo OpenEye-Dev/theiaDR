@@ -13,10 +13,10 @@ def build_label_dict():
 	try:
 		with open('trainLabels.csv') as f:
 			filelabels = f.readlines()
-		except IOError:
-			print "Please download trainLabels.csv from \
-				https://www.kaggle.com/c/diabetic-retinopathy-detection/data, save file locally and run again."
-				return
+	except IOError:
+		print "Please download trainLabels.csv from \
+			https://www.kaggle.com/c/diabetic-retinopathy-detection/data, save file locally and run again."
+		return
 	filelabels = [x.strip().split(',') for x in filelabels[1:]]
 
 	# read into dict
