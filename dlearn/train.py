@@ -20,7 +20,7 @@ IMAGE_SIZE = 512	# assume square image - this is side size in pixels
 BATCH_SIZE = 8
 IMAGE_CHANNELS = 3
 
-def _generate_image_and_label_batch():
+def _generate_image_and_label_batch(TRAINING_DATA_LOCATION=TRAINING_DATA_LOCATION, IMAGE_CHANNELS=IMAGE_CHANNELS, IMAGE_SIZE=IMAGE_SIZE, BATCH_SIZE=BATCH_SIZE):
 	"""
 	Returns list of batch of tensors and labels from the training dataset
 	which is expected to be present in folder TRAINING_DATA_LOCATION
