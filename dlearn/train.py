@@ -47,5 +47,5 @@ def _generate_image_and_label_batch():
 	# step 4: Batching
 	image_batch, label_batch = tf.train.batch([resized_image, labels], batch_size=BATCH_SIZE)
 
-	return image_batch, tf.reshape(label_batch, [BATCH_SIZE])
+	return image_batch, label_batch
 
