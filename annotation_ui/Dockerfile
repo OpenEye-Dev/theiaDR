@@ -1,3 +1,4 @@
+# docker build --build-arg module=annotation_ui -t user/annotation_ui:tag .
 FROM node:boron
 
 ARG module
