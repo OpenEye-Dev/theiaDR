@@ -37,3 +37,9 @@ def get_labels():
 	except IOError:
 		return build_label_dict()
 
+def training_files(folder):
+	"""
+	Returns a list of training filenames, which are in the training file folder
+	"""
+	return os.listdir(folder)
+
