@@ -1,0 +1,27 @@
+<!-- views/home.handlebars -->
+{{#if user}}
+  <div class="jumbotron">
+    <h1>MongoDB User Authentication</h1>
+    <p>Below is your profile information!</p>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Profile Information</h3>
+    </div>
+    <div class="panel-body">
+      <p>Username: {{user.username}}</p>
+      <p>Avatar: <img src="{{user.avatar}}"/></p>
+    </div>
+  </div>
+
+{{else}}
+  <div class="jumbotron">
+    <h1>Welcome!</h1>
+    <p>This is a freemium service for grading retinal images. Please sign in with your authorized token.</p>
+    <h3>What do we offer?</h3>
+    <p>Explanation with images...</p>
+    <h3>Demo</h3>
+    <p>Demo of the API which has speed throttled</p>
+  </div>
+
+{{/if}}
