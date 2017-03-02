@@ -1,0 +1,49 @@
+<!-- views/signin.handlebars -->
+<div class="jumbotron">
+  <h1>Sign in</h1>
+  </p>
+
+  <div id="local">
+    <a data-toggle="collapse" href="#local-sign-in" class="btn btn-default btn-md" role="button">I already have an account</a>
+    <a data-toggle="collapse" href="#local-reg" class="btn btn-default btn-md" role="button">I need to make an account</a>
+  </div>
+
+  <form id="local-sign-in" class="collapse" action="/login" method="post">
+    <div class="form-group">
+        <p></p>
+        <input class="form-control" placeholder="username" type="text" name="username"/>
+    </div>
+    <div class="form-group">
+        <input class="form-control" placeholder="password" type="password" name="password"/>
+    </div>
+    <div>
+        <input type="submit" class="btn btn-primary btn-sm" value="Log In"/>
+    </div>
+  </form>
+
+  <form id="local-reg" class="collapse" action="/local-reg" method="post">
+    <div class="form-group">
+        <p></p>
+        <input class="form-control" placeholder="Choose a username" type="text" name="username"/>
+    </div>
+    <div class="form-group">
+        <input class="form-control" placeholder="Choose a password" type="password" name="password"/>
+    </div>
+    <div class="form-group">
+        <input class="form-control" placeholder="Your login Code" type="text" name="logincode"/>
+    </div>
+    <div>
+        <input type="submit" class="btn btn-danger btn-sm" value="Sign Up"/>
+    </div>
+  </form>
+</div>
+<script
+  src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+  integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="
+  crossorigin="anonymous"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  // make only one expanded at a time
+
+});
+</script>

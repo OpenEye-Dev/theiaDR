@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #222;
+  height: 80px;
+  padding: 20px;
+  color: white;
+}
+
+.ImgUploader {
+    text-align: center;
+}
+
+input {
+    text-align: right;
+    border: dashed black 1px;
+}
+
+.imgPreview {
+    padding:1px;
+    border:1px solid #021a40;
+    height: 400px;
+    width: 200px;
+}
