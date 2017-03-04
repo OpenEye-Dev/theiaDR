@@ -15,6 +15,7 @@ var userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.setPassword = function(password){
+  // TODO: For some reason when 'password' is alphanumeric, the system hangs
   this.salt = crypto.randomBytes(16).toString('hex');
   this.hashedPassword = crypto.pbkdf2Sync(String(password), new Buffer(this.salt, 'binary'), 1000, 64, 'sha1').toString('hex');
 };
