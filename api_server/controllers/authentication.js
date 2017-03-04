@@ -8,22 +8,28 @@ var sendJSONresponse = function(res, status, content) {
 };
 
 module.exports.register = function(req, res) {
-
-  var user = new User();
-
-  user.username = req.body.username;
-
-  user.setPassword(req.body.password);
-
-  user.save(function(err) {
-    var token;
-    token = user.generateJwt();
-    res.status(200);
-    res.json({
-      "token" : token
+  // TODO: Check if this username is already there in the db
+  User.findOne({ username: req.body.username }, function (err, user) {
+      if (err) { res.send(err); }
+      // Return if user not found in database
+      if (user) {
+        res.json({
+          message: 'User already exists'
+        });
+      } else {
+        var user = new User();
+        user.username = req.body.username;
+        user.setPassword(req.body.password);
+        user.save(function(err) {
+          var token;
+          token = user.generateJwt();
+          res.status(200);
+          res.json({
+            "token" : token
+          });
+        });
+      }
     });
-  });
-
 };
 
 module.exports.login = function(req, res) {
