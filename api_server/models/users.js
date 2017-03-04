@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
-const TOKENTIME = 1 * 60; // in seconds
+const TOKENTIME = 12 * 60 * 60; // in seconds
 
 var userSchema = new mongoose.Schema({
   username: {

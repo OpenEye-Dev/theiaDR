@@ -7,14 +7,20 @@ var auth = jwt({
   userProperty: 'payload'
 });
 
+// get controllers containing functions for API request processing
 var ctrlProfile = require('../controllers/profile');
 var ctrlAuth = require('../controllers/authentication');
+var ctrlImage = require('../controllers/imageProcess');
 
 // profile
-router.get('/profile', auth, ctrlProfile.profileRead);
+router.get('/profile', auth, ctrlProfile.profileRead);	// TODO: Get rid of this
 
 // authentication
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
+
+// image-related requests
+router.post('/grade', auth, ctrlImage.gradeImage);
+router.post('/annotation', auth, ctrlImage.receiveAnnotation);
 
 module.exports = router;
