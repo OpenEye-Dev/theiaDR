@@ -1,3 +1,4 @@
+// setting up connection to mongodb via mongoose
 var mongoose = require('mongoose');
 var gracefulShutdown;
 var dbURI = 'mongodb://172.17.0.2:27017/meanAuth';

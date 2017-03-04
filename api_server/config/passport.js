@@ -1,3 +1,5 @@
+// authentication strategy for passportjs
+// TODO: Message for user and password should be the same
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');

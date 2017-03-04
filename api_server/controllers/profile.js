@@ -1,3 +1,4 @@
+// this will be modified soon - simple testing API for viewing a user profile
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 

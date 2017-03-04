@@ -1,3 +1,4 @@
+// routes for the API server
 var express = require('express');
 var router = express.Router();
 var jwt = require('express-jwt');

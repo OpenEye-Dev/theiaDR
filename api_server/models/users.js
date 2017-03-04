@@ -1,3 +1,4 @@
+// custom user schema and methods on it for creating and checking against password hash
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
