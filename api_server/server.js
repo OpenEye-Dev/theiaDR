@@ -1,19 +1,26 @@
-// https://bitbucket.org/hyphe/blog-examples/src/59f61b2d8e68c7d3630b40964c4fe3c191d60de6/authentication/basicScenario.js?at=master&fileviewer=file-view-default
-// https://www.sitepoint.com/user-authentication-mean-stack/
-
-
+/*
+ * API SERVER v2
+----------------------------------------------------------------
+ * Author: Dhruv Joshi
+ * 
+ * A headless API server which shall authenticate, authorize and pass user requests for grading
+ * to tensorflow serving or pass user annotations to the appropriate database and storage
+ *
+ * References:
+ * 1. https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
+ * 2. http://thejackalofjavascript.com/architecting-a-restful-node-js-app/
+ * 3. https://www.ctl.io/developers/blog/post/build-user-authentication-with-node-js-express-passport-and-mongodb
+ * 4. https://bitbucket.org/hyphe/blog-examples/src/59f61b2d8e68c7d3630b40964c4fe3c191d60de6/authentication/basicScenario.js?at=master&fileviewer=file-view-default
+ * 5. https://www.sitepoint.com/user-authentication-mean-stack/
+ */
 'use strict';
 
-///////////////////
-// configuration //
-///////////////////
+// basic config
 const PORT = 8080;
-const SECRET = 'thisShouldNotBeHere';
+const SECRET = 'thisShouldNotBeHere';   // TODO: Remove this when setting up production environment
 const TOKENTIME = 120 * 60; // in seconds
 
-/////////////
-// modules //
-/////////////
+// modules
 const bodyParser = require('body-parser');
 const express = require('express');
 const expressJwt = require('express-jwt');
@@ -26,9 +33,7 @@ require('./models/db');
 require('./config/passport');
 var routesApi = require('./routes/index');
 
-////////////
-// server //
-////////////
+// server setup
 const app = express();
 const authenticate = expressJwt({
   secret: SECRET
@@ -43,21 +48,6 @@ app.get('/', function(req, res) {
 
 app.use('/api', routesApi);
 
-/*
-app.post('/auth', passport.authenticate(
-  'local', {
-    session: false,
-    scope: []
-  }), serialize, generateToken, respond);
-
-
-app.get('/grade', authenticate, function(req, res) {
-  // This function will send a request to the tensorflow server
-  res.status(200).json(
-    {'grade':''}
-    );
-});
-*/
 // [SH] Catch unauthorised errors
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
@@ -81,35 +71,3 @@ if (app.get('env') === 'development') {
 http.createServer(app).listen(PORT, function() {
   console.log('server listening on port ', PORT);
 });
-
-////////////
-// helper //
-////////////
-function serialize(req, res, next) {
-  db.updateOrCreate(req.user, function(err, user) {
-    if (err) {
-      return next(err);
-    }
-    // we store information needed in token in req.user again
-    req.user = {
-      id: user.id
-    };
-    next();
-  });
-}
-
-function generateToken(req, res, next) {
-  req.token = jwt.sign({
-    id: req.user.id,
-  }, SECRET, {
-    expiresIn: TOKENTIME
-  });
-  next();
-}
-
-function respond(req, res) {
-  res.status(200).json({
-    user: req.user,
-    token: req.token
-  });
-}
