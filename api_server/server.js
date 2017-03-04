@@ -1,4 +1,5 @@
 // https://bitbucket.org/hyphe/blog-examples/src/59f61b2d8e68c7d3630b40964c4fe3c191d60de6/authentication/basicScenario.js?at=master&fileviewer=file-view-default
+// 
 // start with node authentication/refreshTokenScenario.js
 'use strict';
 
@@ -6,7 +7,7 @@
 // configuration //
 ///////////////////
 const PORT = 8080; // i know, its old...
-const SECRET = 'server secret';
+const SECRET = 'thisShouldNotBeHere';
 const TOKENTIME = 120 * 60; // in seconds
 
 /////////////
@@ -66,9 +67,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
-  res.status(200).json({
-    hello: 'world'
-  });
+  res.status(200).send('You are lost. Please contact your system administrator.');
 });
 
 app.post('/auth', passport.initialize(), passport.authenticate(
@@ -78,8 +77,11 @@ app.post('/auth', passport.initialize(), passport.authenticate(
   }), serialize, generateToken, respond);
 
 
-app.get('/me', authenticate, function(req, res) {
-  res.status(200).json(req.user);
+app.get('/grade', authenticate, function(req, res) {
+  // This function will send a request to the tensorflow server
+  res.status(200).json(
+    {'grade':''}
+    );
 });
 
 http.createServer(app).listen(PORT, function() {
