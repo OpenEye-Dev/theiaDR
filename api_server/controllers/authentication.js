@@ -2,6 +2,7 @@
 var passport = require('passport');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var SIGNUP_CODES = ['CS193S'];    // TODO: Get from external file or database
 
 var sendJSONresponse = function(res, status, content) {
   res.status(status);
@@ -18,17 +19,26 @@ module.exports.register = function(req, res) {
           message: 'User already exists'
         });
       } else {
-        var user = new User();
-        user.username = req.body.username;
-        user.setPassword(req.body.password);
-        user.save(function(err) {
-          var token;
-          token = user.generateJwt();
-          res.status(200);
-          res.json({
-            "token" : token
-          });
-        });
+        // check if signupCode is correct
+        if (req.body.signupCode == undefined) {
+          res.status(400).json({'message':'signup code missing'});
+        } else {
+          if (SIGNUP_CODES.indexOf(req.body.signupCode) != -1) {
+            var user = new User();
+            user.username = req.body.username;
+            user.setPassword(req.body.password);
+            user.save(function(err) {
+              var token;
+              token = user.generateJwt();
+              res.status(200);
+              res.json({
+                "token" : token
+              });
+            });
+          } else {
+            res.status(400).json({'message':'incorrect signup code'});
+          } 
+        }
       }
     });
 };

@@ -1,6 +1,14 @@
 # Headless API Server
 ### Author: Dhruv Joshi
-This server accepts POST requests for authentication (or creating an account), returns Bearer tokens and JSONs for authentication. The following methods exist (TODO: swaggerjs for API calls):
+This server accepts POST requests for authentication (or creating an account), returns Bearer tokens and JSONs for authentication. The following methods exist (*TODO*: swaggerjs for API calls):
+
+### Authentication
+* `/api/login` - Pass valid username and password as a JSON. `curl -X POST -H "Content-Type: application/json" --data '{ "username": "USERNAME_GOES_HERE", "password":"PASSWORD_GOES_HERE"}' localhost:8080/api/login`
+* `/api/register` - Pass username, password and valid signup code. `curl -X POST -H "Content-Type: application/json" --data '{ "username": "USERNAME_GOES_HERE", "password":"PASSWORD_GOES_HERE"}' localhost:8080/api/register`
+
+### Image grading and annotation
+
+* `/api/grade` - expects a calid bearer token
 
 
 # File structure
