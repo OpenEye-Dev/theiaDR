@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
-const TOKENTIME = 12 * 60 * 60; // in seconds
+const TOKENTIME = 12*60 * 60; // in seconds
 
 var userSchema = new mongoose.Schema({
   username: {
@@ -18,11 +18,11 @@ var userSchema = new mongoose.Schema({
 userSchema.methods.setPassword = function(password){
   // TODO: For some reason when 'password' is alphanumeric, the system hangs
   this.salt = crypto.randomBytes(16).toString('hex');
-  this.hashedPassword = crypto.pbkdf2Sync(String(password), new Buffer(this.salt, 'binary'), 1000, 64, 'sha1').toString('hex');
+  this.hashedPassword = crypto.pbkdf2Sync(password, new Buffer(this.salt, 'binary'), 1000, 64, 'sha1', function(err){ console.error(err)}).toString('hex');
 };
 
 userSchema.methods.validPassword = function(password) {
-  var hash = crypto.pbkdf2Sync(String(password), new Buffer(this.salt, 'binary'), 1000, 64, 'sha1').toString('hex');
+  var hash = crypto.pbkdf2Sync(password, new Buffer(this.salt, 'binary'), 1000, 64, 'sha1', function(err){ console.error(err)}).toString('hex');
   return this.hashedPassword === hash;
 };
 

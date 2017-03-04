@@ -13,9 +13,6 @@ var ctrlProfile = require('../controllers/profile');
 var ctrlAuth = require('../controllers/authentication');
 var ctrlImage = require('../controllers/imageProcess');
 
-// profile
-router.get('/profile', auth, ctrlProfile.profileRead);	// TODO: Get rid of this
-
 // authentication
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
