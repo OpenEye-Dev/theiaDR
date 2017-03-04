@@ -1,12 +1,13 @@
 // https://bitbucket.org/hyphe/blog-examples/src/59f61b2d8e68c7d3630b40964c4fe3c191d60de6/authentication/basicScenario.js?at=master&fileviewer=file-view-default
-// 
-// start with node authentication/refreshTokenScenario.js
+// https://www.sitepoint.com/user-authentication-mean-stack/
+
+
 'use strict';
 
 ///////////////////
 // configuration //
 ///////////////////
-const PORT = 8080; // i know, its old...
+const PORT = 8080;
 const SECRET = 'thisShouldNotBeHere';
 const TOKENTIME = 120 * 60; // in seconds
 
@@ -20,57 +21,30 @@ const http = require('http');
 const jwt = require('jsonwebtoken');
 const logger = require('morgan');
 const passport = require('passport');
-const Strategy = require('passport-local');
 
-const app = express();
-const authenticate = expressJwt({
-  secret: SECRET
-});
-
-////////////////////
-// database dummy //
-////////////////////
-const db = {
-  updateOrCreate: function(user, cb) {
-    // db dummy, we just cb the user
-    cb(null, user);
-  },
-  authenticate: function(username, password, cb) {
-    // database dummy - find user and verify password
-    if (username === 'devils' && password === '666') {
-      cb(null, {
-        id: 666,
-        firstname: 'devils',
-        lastname: 'name',
-        email: 'devil@he.ll',
-        verified: true
-      });
-    } else {
-      cb(null, false);
-    }
-  }
-};
-
-//////////////
-// passport //
-//////////////
-passport.use(new Strategy(
-  function(username, password, done) {
-    db.authenticate(username, password, done);
-  }
-));
+require('./models/db');
+require('./config/passport');
+var routesApi = require('./routes/index');
 
 ////////////
 // server //
 ////////////
+const app = express();
+const authenticate = expressJwt({
+  secret: SECRET
+});
 app.use(logger('dev'));
 app.use(bodyParser.json());
+app.use(passport.initialize());
 
 app.get('/', function(req, res) {
   res.status(200).send('You are lost. Please contact your system administrator.');
 });
 
-app.post('/auth', passport.initialize(), passport.authenticate(
+app.use('/api', routesApi);
+
+/*
+app.post('/auth', passport.authenticate(
   'local', {
     session: false,
     scope: []
@@ -83,6 +57,26 @@ app.get('/grade', authenticate, function(req, res) {
     {'grade':''}
     );
 });
+*/
+// [SH] Catch unauthorised errors
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401);
+    res.json({"message" : err.name + ": " + err.message});
+  }
+});
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
+}
 
 http.createServer(app).listen(PORT, function() {
   console.log('server listening on port ', PORT);
