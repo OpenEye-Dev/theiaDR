@@ -2,7 +2,14 @@
 # Use prepackaged node image
 FROM node:boron
 
-# Set the working directory
-WORKDIR   /src
+ENV BASE_PATH /usr/local/api_server
 
-CMD ["/bin/bash"]
+# Create app directory
+RUN mkdir -p $BASE_PATH
+WORKDIR $BASE_PATH
+
+# Copy files and install dependencies
+COPY . $BASE_PATH
+RUN npm install
+
+CMD ["npm", "start"]

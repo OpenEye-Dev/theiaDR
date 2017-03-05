@@ -66,7 +66,6 @@ else
 fi
 
 
-DEV_USER=$(echo $USER | tr '[:upper:]' '[:lower:]')
 IMG_NAME=${DEV_USER}/${MODULE}
 IMG_TAG=0.1
 IMG_NAME+=":${IMG_TAG}"
