@@ -5,11 +5,11 @@ source ../gen-config
 # Module config
 source ./start-config
 
-# MongoDB setup
+# MongoDB
 docker pull mongo:latest
 docker run -v `pwd`:/data --name mongo -d mongo mongod --smallfiles
 
-# Build and run
+# api_server build and run
 docker build -t ${DEV_USER}/${IMAGE_NAME} .
 docker run -it --link mongo:mongo --rm -p 8080:8080 $CONTAINER_NAME
 
