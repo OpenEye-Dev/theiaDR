@@ -72,10 +72,10 @@ For example: `kubectl run api-pod --image=mmmarco/api_server:1.0 --port=80`
 1. `kubectl create -f db-pod.yml -f db-service.yml`
 2. `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
 
-#### Suggestion for Mac OS X users
-Open different shells (e.g. using [iTerm2](https://www.iterm2.com)) and monitor what's happening with the following commands:
-* Install watch using brew package manager: `brew install watch`
-* In different shells run: `watch -n 0.4 kubectl get {po, svc, deploy, rc}`
+> __Suggestion for Mac OS X users__  
+> Open different shells (e.g. using [iTerm2](https://www.iterm2.com)) and monitor what's happening with the following commands:  
+> - Install watch using brew package manager: `brew install watch`  
+> - In different shells run: `watch -n 0.4 kubectl get {po, svc, deploy, rc}`  
 
 The connection between web (api_server pod) and bd (mongoDB pod) can be tested in the following way:  
 
