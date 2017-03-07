@@ -21,13 +21,11 @@ The top folders are the following:
 * `routes` - `index.js` handles routes for `/api`
 * `models` - `db.js` sets up a connection to the database and `users.js` defines methods on the user model for mongodb.
 
-# Container
+# Docker and Kubernetes
 
-## Docker Quickstart
+## Local deployment in Docker
 
-### Local deployment
-
-#### Step by step
+### Step by step
 
 * First pull and start a new mongodb container. Run `docker pull mongo:latest`. This will create a new mongo image when you run `docker images`.
 * Start this mongodb container and run it as a process in the background using ```docker run -v `pwd`:/data --name mongo -d mongo mongod --smallfiles```. Make sure you are running it in a folder dedicated to this project.
@@ -40,14 +38,15 @@ The top folders are the following:
 * Run `source runserver.sh` to install dependencies and start the server on port 8080
 * Navigate to localhost:8080 to see ```Welcome to the Server. The login page will go here.``` indicating it's working fine. The server will automatically pick up changes as you make changes to files in this directory. The bash shell opened up will show you what's going on.
 
-#### Automated script
+### Automated script
 
 This script automates all the above mentioned steps.
 * Make sure that you don't have a mongo container already saved locally. In that case, find the container id by running `docker ps -a | grep -i mongo`. If it is running, stop it using `docker stop <container-id>`. Remove it by running `docker rm <container-id>`
 * Launch `./start.sh`
 
-### Cluster deployment
+## Cluster deployment in Kubernetes
 
+### Public images
 Kubernetes needs public images (either in docker-hub or in the Google Container Engine Registry of your project) in order to spin up pods.
 
 #### Docker hub
@@ -63,6 +62,24 @@ In the following steps I will describe how to push a local image to the GCER of 
 1. Make sure your gcloud client is set up correctly: `gcloud info`
 2. Tag the image: `docker tag <local-image-id> gcr.io/<your-project-id>/<image>:<tag>`
 3. Push it to GCER: `gcloud docker -- push gcr.io/<your-project-id>/<image>:<tag>`
+
+Reference: [https://cloud.google.com/container-registry/docs/pushing](https://cloud.google.com/container-registry/docs/pushing)
+
+### Running on Kubernetes
+From the images created in the previous sections we can create containers run inside Kubernetes pod be by the following command: `kubectl run <deploy-name> --image=<image>:<tag> --port=80`.  
+For example: `kubectl run api-pod --image=mmmarco/api_server:1.0 --port=80`
+
+1. `kubectl create -f db-pod.yml -f db-serveice.yml`
+2. `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
+
+The connection between web (api_server pod) and bd (mongoDB pod) can be tested in the following way:  
+
+1. Find db cluster-ip and port: `kubectl get svc`
+2. Access a web running pod by running: `kubectl exec -ti <pod-name> bash`
+3. Install telnet: `apt-get update && apt-install telnet`
+4. Connect to the db with the info found in 1: `telnet <db-cluster-ip> <db-port>`
+
+Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com/watch?v=NrzrpyMLWes)
 
 # Tests
 * Test if things are up and running by navigating to localhost:8080 - you should see a cheerful, warm, welcoming message
