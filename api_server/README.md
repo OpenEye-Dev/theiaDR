@@ -83,6 +83,7 @@ The imperative way is usually the one you use to try out things and get to a wor
 From the images created in the previous sections we can create containers run inside Kubernetes pod be by the following command: `kubectl run <deploy-name> --image=<image>:<tag> --port=80`.  
 For example: `kubectl run api-pod --image=mmmarco/api_server:1.0 --port=80`
 
+<<<<<<< HEAD
 #### The Declarative Way
 
 The declarative way on the other hand, is what you should come up with once you go into actually deploying and managing your software in production or integrating with continuous delivery pipelines. You might have tried out stuff the imperative way before, but once you know how it should look like, you sit down and "make it official" by writing it into a declarative definition in .yml files.
@@ -102,6 +103,15 @@ Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com
 ## Kubernetes
 
 ### Communication between api_server and mongo
+=======
+1. `kubectl create -f db-pod.yml -f db-service.yml`
+2. `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
+
+> __Suggestion for Mac OS X users__  
+> Open different shells (e.g. using [iTerm2](https://www.iterm2.com)) and monitor what's happening with the following commands:  
+> - Install watch using brew package manager: `brew install watch`  
+> - In different shells run: `watch -n 0.4 kubectl get {po, svc, deploy, rc}`  
+>>>>>>> d2e35a64120721344073b104a1a2389a37c1b3d9
 
 The connection between web (api_server pod) and bd (mongoDB pod) can be tested in the following way:  
 
