@@ -12,6 +12,11 @@ var upload = multer({ dest: 'uploads/' }).single('uploadedImage');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 
+// connect to postgres
+const pg = require('pg');
+const connectionString = process.env.DATABASE_URL || 'postgres://annotation:annotation@172.17.0.3:5432/opendoc';
+
+
 module.exports.gradeImage = function(req, res) {
   /*
       This function receives an image, parses the request body using multer 
@@ -59,8 +64,15 @@ module.exports.receiveAnnotation = function(req, res) {
         res.status(401).json({'message': 'Incorrect username'});
       } else {
         console.log(req.body.annotation);
-        res.status(200).json({'message':'Annotation received.'});
+
         // Send annotation JSON to the SQL db.
+        const client = new pg.Client(connectionString);
+        client.connect();
+        // const query = client.query('insert into annotations (' + req.body.annotation + ')');
+        const query = client.query('INSERT INTO annotations (annjson, id) values ($1, $2)', [req.body.annotation, 1]);
+        query.on('end', () => { client.end(); });
+
+        res.status(200).json({'message':'Annotation received.'});
       }
     });
 }
