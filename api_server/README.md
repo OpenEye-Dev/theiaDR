@@ -1,5 +1,5 @@
 # Headless API Server
-### Author: Dhruv Joshi
+### Authors: Dhruv J and Marco M M
 This server accepts POST requests for authentication (or creating an account), returns Bearer tokens and JSONs for authentication. The following methods exist (*TODO*: swaggerjs for API calls):
 
 ### Authentication
@@ -46,10 +46,18 @@ This script automates all the above mentioned steps.
 
 ## Cluster deployment in Kubernetes
 
+Firstly create a Kubernetes cluster.
+* In Google Cloud Engine use:  
+`gcloud container clusters create NAME [--num-nodes=NUM_NODES; default="3"]`  
+It can be resized: `gcloud container clusters resize NAME --size=SIZE`
+* Locally you can install [minikube](https://github.com/kubernetes/minikube) and run `minikube start`.
+
 ### Public images
+
 Kubernetes needs public images (either in docker-hub or in the Google Container Engine Registry of your project) in order to spin up pods.
 
 #### Docker hub
+
 In the following steps I will describe how to push a local image to docker-hub. You can either create your own account and follow along or directly find the resulting images at __mmmarco/api_server:1.0__
 
 1. Build a docker image locally, as shown in _Local Deployment > Step by Step_
@@ -57,6 +65,7 @@ In the following steps I will describe how to push a local image to docker-hub. 
 3. Push it to docker-hub: `docker push <docker-hub-username>/<image>:<tag>`
 
 #### Google Container Engine Registry (GCER)
+
 In the following steps I will describe how to push a local image to the GCER of your project.
 
 1. Make sure your gcloud client is set up correctly: `gcloud info`
@@ -66,11 +75,33 @@ In the following steps I will describe how to push a local image to the GCER of 
 Reference: [https://cloud.google.com/container-registry/docs/pushing](https://cloud.google.com/container-registry/docs/pushing)
 
 ### Running on Kubernetes
+
+#### The Imperative Way
+
+The imperative way is usually the one you use to try out things and get to a working system. You manually tweak it and at some point it is to your liking. However, if you keep on using this imperative style for deploying and managing your software you will encounter several problems (even if you automate the steps).  
+  
 From the images created in the previous sections we can create containers run inside Kubernetes pod be by the following command: `kubectl run <deploy-name> --image=<image>:<tag> --port=80`.  
 For example: `kubectl run api-pod --image=mmmarco/api_server:1.0 --port=80`
 
+#### The Declarative Way
+
+The declarative way on the other hand, is what you should come up with once you go into actually deploying and managing your software in production or integrating with continuous delivery pipelines. You might have tried out stuff the imperative way before, but once you know how it should look like, you sit down and "make it official" by writing it into a declarative definition in .yml files.
+
 1. `kubectl create -f db-pod.yml -f db-serveice.yml`
 2. `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
+
+Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com/watch?v=NrzrpyMLWes)
+
+# Tests
+
+## api_server
+
+* Test if things are up and running by navigating to localhost:8080 - you should see a cheerful, warm, welcoming message
+* You can access the mongodb shell from the running container by `docker exec -it mongo bash`
+
+## Kubernetes
+
+### Communication between api_server and mongo
 
 The connection between web (api_server pod) and bd (mongoDB pod) can be tested in the following way:  
 
@@ -78,12 +109,6 @@ The connection between web (api_server pod) and bd (mongoDB pod) can be tested i
 2. Access a web running pod by running: `kubectl exec -ti <pod-name> bash`
 3. Install telnet: `apt-get update && apt-install telnet`
 4. Connect to the db with the info found in 1: `telnet <db-cluster-ip> <db-port>`
-
-Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com/watch?v=NrzrpyMLWes)
-
-# Tests
-* Test if things are up and running by navigating to localhost:8080 - you should see a cheerful, warm, welcoming message
-* You can access the mongodb shell from the running container by `docker exec -it mongo bash`
 
 # References
 

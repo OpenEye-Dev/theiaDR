@@ -6,7 +6,7 @@ metadata:
     name: web
     app: front-end
 spec:
-  replicas: 3
+  replicas: 2
   template:
     metadata:
       labels:
@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: web
-        image: mmmarco/api_server:1.0
+        image: gcr.io/medical-image-grading-api/api_server:1.0
         ports:
         - containerPort: 8080

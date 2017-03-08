@@ -7,16 +7,9 @@ metadata:
     app: front-end
 spec:
   containers:
-    - image: mongo
+    - image: gcr.io/medical-image-grading-api/mongo:latest
       name: mongo
       ports:
       - name: mongo
         containerPort: 27017
         hostPort: 27017
-      volumeMounts:
-        - name: mongo-storage
-          mountPath: /data/db
-  volumes:
-    - name: mongo-storage
-      hostPath:
-        path: /data/db
