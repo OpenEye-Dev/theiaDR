@@ -52,6 +52,10 @@ Firstly create a Kubernetes cluster.
 It can be resized: `gcloud container clusters resize NAME --size=SIZE`
 * Locally you can install [minikube](https://github.com/kubernetes/minikube) and run `minikube start`.
 
+> __Teardown reminder__  
+> `kubectl delete { po | svc | rc | deploy } --all`  
+> `gcloud container clusters delete NAME`
+
 ### Public images
 
 Kubernetes needs public images (either in docker-hub or in the Google Container Engine Registry of your project) in order to spin up pods.
