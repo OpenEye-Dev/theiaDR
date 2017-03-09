@@ -91,7 +91,7 @@ For example: `kubectl run api-pod --image=mmmarco/api_server:1.0 --port=80`
 
 The declarative way on the other hand, is what you should come up with once you go into actually deploying and managing your software in production or integrating with continuous delivery pipelines. You might have tried out stuff the imperative way before, but once you know how it should look like, you sit down and "make it official" by writing it into a declarative definition in .yml files.
 
-1. `kubectl create -f db-pod.yml -f db-serveice.yml`
+1. `kubectl create -f db-pod.yml -f db-service.yml`
 2. `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
 
 Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com/watch?v=NrzrpyMLWes)
