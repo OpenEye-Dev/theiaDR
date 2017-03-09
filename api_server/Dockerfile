@@ -12,4 +12,6 @@ WORKDIR $BASE_PATH
 COPY . $BASE_PATH
 RUN npm install
 
-CMD ["npm", "start"]
+#CMD ["npm", "start"]
+RUN touch server.log
+CMD ["/bin/sh", "-c", "npm start > server.log"]

@@ -1,7 +1,17 @@
 // setting up connection to mongodb via mongoose
 var mongoose = require('mongoose');
 var gracefulShutdown;
-var dbURI = 'mongodb://172.17.0.2:27017/meanAuth';
+
+var DB_HOST = '172.17.0.2';
+var DB_PORT = '27017';
+if(process.env.DB_SERVICE_HOST && typeof process.env.DB_SERVICE_HOST !== 'undefined'){
+  DB_HOST = process.env.DB_SERVICE_HOST;
+  console.log('DB_SERVICE_HOST found!');
+}else{
+  console.log('not found!');
+}
+var dbURI = 'mongodb://' + DB_HOST + ':' + DB_PORT + '/meanAuth';
+console.log(dbURI);
 if (process.env.NODE_ENV === 'production') {
   dbURI = process.env.MONGOLAB_URI;
 }
