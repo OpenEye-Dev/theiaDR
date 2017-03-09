@@ -2,7 +2,7 @@
 ### Authors: Dhruv J and Marco M M
 This server accepts POST requests for authentication (or creating an account), returns Bearer tokens and JSONs for authentication. The following methods exist (*TODO*: swaggerjs for API calls):
 
-### Authentication
+### Authentication 🔐
 * `/api/login` - Pass valid username and password as a JSON. Returns a bearer token which is valid for 12 hours. `curl -X POST -H "Content-Type: application/json" --data '{ "username": "USERNAME_GOES_HERE", "password":"PASSWORD_GOES_HERE"}' localhost:8080/api/login`
 * `/api/register` - Pass username, password and valid signup code ('CS193S' for this class project). `curl -X POST -H "Content-Type: application/json" --data '{ "username": "USERNAME_GOES_HERE", "password":"PASSWORD_GOES_HERE", "signupCode":"SIGNUP_CODE_GOES_HERE"}' localhost:8080/api/register`
 
@@ -12,7 +12,7 @@ This server accepts POST requests for authentication (or creating an account), r
 * `/api/annotation` - send JSON with annotations along with valid bearer token.
 
 
-# File structure
+# File structure 📂
 The `sitepoint.com` reference was used extensively to build up the authentication platform part of the API. `server.js` has the main server definition using an express app.
 
 The top folders are the following:
@@ -21,7 +21,7 @@ The top folders are the following:
 * `routes` - `index.js` handles routes for `/api`
 * `models` - `db.js` sets up a connection to the database and `users.js` defines methods on the user model for mongodb.
 
-# Docker and Kubernetes
+# Docker and Kubernetes 🐳
 
 ## Local deployment in Docker
 
@@ -83,7 +83,6 @@ The imperative way is usually the one you use to try out things and get to a wor
 From the images created in the previous sections we can create containers run inside Kubernetes pod be by the following command: `kubectl run <deploy-name> --image=<image>:<tag> --port=80`.  
 For example: `kubectl run api-pod --image=mmmarco/api_server:1.0 --port=80`
 
-<<<<<<< HEAD
 #### The Declarative Way
 
 The declarative way on the other hand, is what you should come up with once you go into actually deploying and managing your software in production or integrating with continuous delivery pipelines. You might have tried out stuff the imperative way before, but once you know how it should look like, you sit down and "make it official" by writing it into a declarative definition in .yml files.
@@ -102,16 +101,20 @@ Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com
 
 ## Kubernetes
 
+1. Start a Kubernetes cluster on gcloud: `gcloud container clusters create cl1`
+2. _Make yourself a cup of tea, it is going to take a while...☕️_
+3. Create mongo pod and service: `kubectl create -f db-pod.yml -f db-service.yml`
+4. Create api_server pod, rc and service: `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
+5. When everything is up and running, look up at the web-loadbalacer external-ip: `kubectl get svc`
+6. Send a the following auth json request to that IP and receive a token in response:  
+`curl -X POST -H "Content-Type: application/json" --data '{ "username": "user1", "password":"password1", "signupCode":"CS193S"}' EXTERNAL-IP:80/api/register`
+
 ### Communication between api_server and mongo
-=======
-1. `kubectl create -f db-pod.yml -f db-service.yml`
-2. `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
 
 > __Suggestion for Mac OS X users__  
 > Open different shells (e.g. using [iTerm2](https://www.iterm2.com)) and monitor what's happening with the following commands:  
 > - Install watch using brew package manager: `brew install watch`  
 > - In different shells run: `watch -n 0.4 kubectl get {po, svc, deploy, rc}`  
->>>>>>> d2e35a64120721344073b104a1a2389a37c1b3d9
 
 The connection between web (api_server pod) and bd (mongoDB pod) can be tested in the following way:  
 
@@ -120,7 +123,8 @@ The connection between web (api_server pod) and bd (mongoDB pod) can be tested i
 3. Install telnet: `apt-get update && apt-install telnet`
 4. Connect to the db with the info found in 1: `telnet <db-cluster-ip> <db-port>`
 
-# References
+
+# References 🔎
 
 * [https://nodejs.org/en/docs/guides/nodejs-docker-webapp/](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/)
 * [http://blog.abhinav.ca/blog/2014/06/17/develop-a-nodejs-app-with-docker/](http://blog.abhinav.ca/blog/2014/06/17/develop-a-nodejs-app-with-docker/)
