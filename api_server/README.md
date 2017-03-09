@@ -92,7 +92,7 @@ The declarative way on the other hand, is what you should come up with once you 
 
 Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com/watch?v=NrzrpyMLWes)
 
-# Tests
+# Tests 🛠
 
 ## api_server
 
