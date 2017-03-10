@@ -1,10 +1,13 @@
-# Image Grading API for Medical Images
+# Image Grading API for Medical Images [![npm](https://img.shields.io/npm/v/npm.svg)]() [![Docker Automated buil](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)]()
 Course Project for CS193S 
 
 Authors: Louis Brion, Marco Montalto Monella, Dhruv Joshi
 
 # Purpose
 We endeavour to build a highly scalable platform for Medical image grading in the cloud. This system would be engineered to scale horizontally and vertically, and in the number of services that can be provided (in this case, the system works for diabetic retinopathy images, but can be extended to other use medical cases as well (radiology).
+
+
+## [Latest Onboarding Document 🤝](https://docs.google.com/a/stanford.edu/document/d/1eF9tZp3QNRt0_N8PxvPlg2_1HGDg35Od4PQXBVRb-nc/edit?usp=sharing)
 
 # Module container generation and deployment
 * The purpose of this `genContainer.sh` is to clone the whole project repo, with one arg, the subdirectory (called module). If not specified, an interactive menu will be shown in order to choose a module. A docker container will be build and run.
