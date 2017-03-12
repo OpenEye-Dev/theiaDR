@@ -28,30 +28,29 @@ app = Flask(__name__)
 @app.route('/grade', methods=['POST'])
 def grade():
     # Feed the image_data as input to the graph and get first prediction
-    """ EXTREMELY INEFFICIENT STEP: SAVING A FILE TO DISK AND THEN READING IT AGAIN """
     image_data = request.files.get('imagefile')
+
+    """ EXTREMELY INEFFICIENT STEP: SAVING A FILE TO DISK AND THEN READING IT AGAIN """
+    '''
     image_data.save('data.jpg')
     image_data = tf.gfile.FastGFile('data.jpg', 'rb').read()
+    '''
 
-    # BETTER METHOD BUT NOT WORKING: save to fileIO and then pass as bytearray
-    # in_memory_file = io.BytesIO()
-    # image_data.save(in_memory_file)
-    # image_data = np.fromstring(in_memory_file.getvalue(), dtype=np.uint8)
-    # image_data = bytearray(in_memory_file.getvalue())[0]
-    # print image_data
-    # image_data = in_memory_file.readlines()
-    # print image_data
-    ''''''
+    # BETTER METHOD: Convert to bytearray and then to string 
+    # this is what FastGFile returns
+    image_data = str(bytearray(image_data.read()))
+
     predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
     # Sort to show labels of first prediction in order of confidence
     top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
 
+    grade_dict = {}
     for node_id in top_k:
     	human_string = label_lines[node_id]
     	score = predictions[0][node_id]
-    	print('%s (score = %.5f)' % (human_string, score))
-    ''''''
-    return jsonify({'result':'whatever'})
+        grade_dict[human_string] = float(score)
+    	# print('%s (score = %.5f)' % (human_string, score))
+    return jsonify(grade_dict)
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=int("8080"), debug=True)
