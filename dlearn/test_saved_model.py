@@ -1,12 +1,12 @@
 # NOTE: Run this in the folder ~/retrain on the gpu1 VM
 # REF: https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/#4
-
-image_data = tf.gfile.FastGFile('retina.jpg', 'rb').read()
+import os, tensorflow as tf
+BASE_FOLDER = '/home/dhruv_joshi_1989/retrain/Mar-11-model'
 
 # A list of the actual labels
 label_lines = ["healthy", "unhealthy"]
 
-with tf.gfile.FastGFile("output_graph.pb", 'rb') as f:
+with tf.gfile.FastGFile(os.path.join(BASE_FOLDER,"output_graph.pb"), 'rb') as f:
     graph_def = tf.GraphDef()
     graph_def.ParseFromString(f.read())
     _ = tf.import_graph_def(graph_def, name='')
