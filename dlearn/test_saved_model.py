@@ -1,4 +1,5 @@
 # NOTE: Run this in the folder ~/retrain on the gpu1 VM
+# REF: https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/#4
 
 image_data = tf.gfile.FastGFile('retina.jpg', 'rb').read()
 
