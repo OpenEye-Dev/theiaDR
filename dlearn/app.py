@@ -7,14 +7,10 @@ import numpy as np
 import tensorflow as tf
 
 # Get the model
-BASE_FOLDER = '/home/dhruv_joshi_1989/retrain/Mar-11-model'
-
-# image_data = tf.gfile.FastGFile(os.path.join(BASE_FOLDER, 'retina.jpg'), 'rb').read()
-
 # A list of the actual labels
 label_lines = ["healthy", "unhealthy"]
 
-with tf.gfile.FastGFile(os.path.join(BASE_FOLDER,"output_graph.pb"), 'rb') as f:
+with tf.gfile.FastGFile("output_graph.pb", 'rb') as f:
     graph_def = tf.GraphDef()
     graph_def.ParseFromString(f.read())
     _ = tf.import_graph_def(graph_def, name='')
