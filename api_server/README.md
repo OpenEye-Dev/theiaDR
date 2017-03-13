@@ -80,21 +80,31 @@ Reference: [https://cloud.google.com/container-registry/docs/pushing](https://cl
 
 ### Running on Kubernetes
 
-#### The Imperative Way
+#### Step by step
+
+##### The Imperative Way
 
 The imperative way is usually the one you use to try out things and get to a working system. You manually tweak it and at some point it is to your liking. However, if you keep on using this imperative style for deploying and managing your software you will encounter several problems (even if you automate the steps).  
   
 From the images created in the previous sections we can create containers run inside Kubernetes pod be by the following command: `kubectl run <deploy-name> --image=<image>:<tag> --port=80`.  
 For example: `kubectl run api-pod --image=mmmarco/api_server:1.0 --port=80`
 
-#### The Declarative Way
+##### The Declarative Way
 
 The declarative way on the other hand, is what you should come up with once you go into actually deploying and managing your software in production or integrating with continuous delivery pipelines. You might have tried out stuff the imperative way before, but once you know how it should look like, you sit down and "make it official" by writing it into a declarative definition in .yml files.
 
-1. `kubectl create -f db-pod.yml -f db-service.yml`
-2. `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
+1. `kubectl create -f kubernetes/db.yml`
+2. `kubectl create -f kubernetes/web.yml`
 
 Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com/watch?v=NrzrpyMLWes)
+
+#### Automated script
+
+This script automates all the above mentioned steps.
+* Make sure that you don't already have a running cluster called cl1.
+* Launch `./cluster.start.sh`
+
+The script will run points 1,2,3,4 in [Tests > Kubernetes](#kubernetes).
 
 # Tests 🛠
 
@@ -107,8 +117,8 @@ Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com
 
 1. Start a Kubernetes cluster on gcloud: `gcloud container clusters create cl1`
 2. _Make yourself a cup of tea, it is going to take a while...☕️_
-3. Create mongo pod and service: `kubectl create -f db-pod.yml -f db-service.yml`
-4. Create api_server pod, rc and service: `kubectl create -f web-pod.yml -f web-rc.yml -f web-service.yml`
+3. Create mongo pod and service: `kubectl create -f kubernetes/db.yml`
+4. Create api_server pod, deploy and service: `kubectl create -f kubernetes/web.yml`
 5. When everything is up and running, look up at the web-loadbalacer external-ip: `kubectl get svc`
 6. Send a the following auth json request to that IP and receive a token in response:  
 `curl -X POST -H "Content-Type: application/json" --data '{ "username": "user1", "password":"password1", "signupCode":"CS193S"}' EXTERNAL-IP:80/api/register`
