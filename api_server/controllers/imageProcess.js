@@ -11,6 +11,7 @@ var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' }).single('uploadedImage');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var $ = require('jquery');
 
 // connect to postgres
 const pg = require('pg');
@@ -39,7 +40,30 @@ module.exports.gradeImage = function(req, res) {
     console.log(req.file);
     // TODO: Pass the image to tensorflow and return JSON with the annotations
 
-  	res.status(200).json({'message':'OK'});
+    var GRADE_HOST = "127.0.0.1";
+    var GRADE_PORT = "8081";
+    
+    if(process.env.GRADE_SERVICE_HOST && typeof process.env.GRADE_SERVICE_HOST !== 'undefined'){
+     
+      GRADE_HOST = process.env.GRADE_SERVICE_HOST;
+      console.log("GRADE_SERVICE_HOST found!");
+      var GRADE_URL = GRADE_HOST + ":" + GRADE_PORT + "/grade";
+     
+      $.ajax({
+          url: GRADE_URL,
+          data: res.file,
+          processData: false,
+          contentType: false,
+          type: 'POST',
+          success: function(data){
+             alert(data);
+             console.log("File uploaded: " + res.file);
+          }
+       });
+    }else{
+      console.log('GRADE_SERVICE not found!');
+    }
+    res.status(200).json({'message':'OK'});
   });
 }
 
