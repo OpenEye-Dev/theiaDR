@@ -11,6 +11,15 @@ var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' }).single('uploadedImage');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var $;
+require("jsdom").env("", function(err, window) {
+    if (err) {
+        console.error(err);
+        return;
+    }
+ 
+    $ = require("jquery")(window);
+});
 
 // connect to postgres
 const pg = require('pg');
@@ -38,8 +47,17 @@ module.exports.gradeImage = function(req, res) {
     console.log('all ok');
     console.log(req.file);
     // TODO: Pass the image to tensorflow and return JSON with the annotations
-
-  	res.status(200).json({'message':'OK'});
+    $.ajax({
+      url: "http://35.185.9.9:8080/grade",
+      headers: {'Content-Type': 'multipart/form-data'},
+      data: req.file,
+      type: 'POST',
+      success: function(data){
+         console.log(data);
+         console.log("success");
+         res.status(200).json({'message':'OK'});
+      }
+    });
   });
 }
 
