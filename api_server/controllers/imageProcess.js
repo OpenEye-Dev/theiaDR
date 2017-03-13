@@ -11,6 +11,7 @@ var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' }).single('uploadedImage');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var $;
 require("jsdom").env("", function(err, window) {
     if (err) {
         console.error(err);
