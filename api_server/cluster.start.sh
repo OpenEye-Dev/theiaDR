@@ -7,4 +7,4 @@ cd kubernetes
 gcloud container clusters create cl1 --num-nodes=2
 
 # mongo and api server
-kubectl create -f db.yml -f web.yml
+kubectl create -f db.yml -f grade.yml -f web.yml
