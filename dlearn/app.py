@@ -24,7 +24,17 @@ app = Flask(__name__)
 @app.route('/grade', methods=['POST'])
 def grade():
     # Feed the image_data as input to the graph and get first prediction
-    image_data = request.files.get('imagefile')
+    try:
+      image_data = request.files.get('file')
+      # BETTER METHOD: Convert to bytearray and then to string 
+      # this is what FastGFile returns
+      image_data = str(bytearray(image_data.read()))
+
+      predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
+      # Sort to show labels of first prediction in order of confidence
+      top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
+    except:
+      return jsonify({'message':'There was an error at TF Server.'})
 
     """ EXTREMELY INEFFICIENT STEP: SAVING A FILE TO DISK AND THEN READING IT AGAIN """
     '''
