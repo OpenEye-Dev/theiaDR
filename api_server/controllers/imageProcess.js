@@ -11,7 +11,14 @@ var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' }).single('uploadedImage');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var $ = require('jquery');
+require("jsdom").env("", function(err, window) {
+    if (err) {
+        console.error(err);
+        return;
+    }
+ 
+    $ = require("jquery")(window);
+});
 
 // connect to postgres
 const pg = require('pg');
@@ -39,31 +46,17 @@ module.exports.gradeImage = function(req, res) {
     console.log('all ok');
     console.log(req.file);
     // TODO: Pass the image to tensorflow and return JSON with the annotations
-
-    var GRADE_HOST = "127.0.0.1";
-    var GRADE_PORT = "8081";
-    
-    if(process.env.GRADE_SERVICE_HOST && typeof process.env.GRADE_SERVICE_HOST !== 'undefined'){
-     
-      GRADE_HOST = process.env.GRADE_SERVICE_HOST;
-      console.log("GRADE_SERVICE_HOST found!");
-      var GRADE_URL = GRADE_HOST + ":" + GRADE_PORT + "/grade";
-     
-      $.ajax({
-          url: GRADE_URL,
-          data: res.file,
-          processData: false,
-          contentType: false,
-          type: 'POST',
-          success: function(data){
-             alert(data);
-             console.log("File uploaded: " + res.file);
-          }
-       });
-    }else{
-      console.log('GRADE_SERVICE not found!');
-    }
-    res.status(200).json({'message':'OK'});
+    $.ajax({
+      url: "http://35.185.9.9:8080/grade",
+      headers: {'Content-Type': 'multipart/form-data'},
+      data: req.file,
+      type: 'POST',
+      success: function(data){
+         console.log(data);
+         console.log("success");
+         res.status(200).json({'message':'OK'});
+      }
+    });
   });
 }
 
