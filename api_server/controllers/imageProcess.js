@@ -8,18 +8,13 @@
  */
 
 var multer  = require('multer');
-var upload = multer({ dest: 'uploads/' }).single('uploadedImage');
+var upload = multer({ dest: 'uploads/' }).single('image');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var $;
-require("jsdom").env("", function(err, window) {
-    if (err) {
-        console.error(err);
-        return;
-    }
- 
-    $ = require("jquery")(window);
-});
+
+// image uploading and requesting to TF server
+var fs = require('fs');
+var request = require('request');
 
 // connect to postgres
 const pg = require('pg');
@@ -32,8 +27,6 @@ module.exports.gradeImage = function(req, res) {
       (which expects the image to be sent as 'uploadedImage') and will store it
       locally and call the tensorflow server on it, which will then take over. 
 
-      TODO: When the tensorflow server responds, need to actually send back annotations.
-      This should most likely be an async call from here itself.
   */
   upload(req, res, function (err) {
     if (err) {
@@ -44,21 +37,20 @@ module.exports.gradeImage = function(req, res) {
     }
 
     // Everything went fine
-    console.log('all ok');
+    console.log('all ok with multer');
     console.log(req.file);
-    // TODO: Pass the image to tensorflow and return JSON with the annotations
-    $.ajax({
-      url: "http://35.185.9.9:8080/grade",
-      headers: {'Content-Type': 'multipart/form-data'},
-      data: req.file,
-      type: 'POST',
-      success: function(data){
-         console.log(data);
-         console.log("success");
-         res.status(200).json({'message':'OK'});
-      }
+
+    // Pass the image to tensorflow and return JSON with the annotations
+     var reqToBeSent = request.post('http://104.196.39.24:8080/grade', function (err, resp, body) {
+          if (err) {
+              console.log('Error!');
+            } else {
+              res.status(200).send(body);
+            }
+          });
+          var form = reqToBeSent.form();
+          form.append('file', fs.createReadStream(req.file.path));
     });
-  });
 }
 
 module.exports.receiveAnnotation = function(req, res) {
