@@ -44,7 +44,7 @@ def grade():
 
     # BETTER METHOD: Convert to bytearray and then to string 
     # this is what FastGFile returns
-    image_data = str(bytearray(image_data.read()))
+    image_data = str(bytearray(image_data))
 
     predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
     # Sort to show labels of first prediction in order of confidence
