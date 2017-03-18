@@ -7,6 +7,10 @@ cd kubernetes
 if [ $1 == 'restart' ]
 then 
 	echo "restarting cluster"
+        kubectl delete deploy --all
+        kubectl delete svc --all
+        kubectl delete rc --all
+        kubectl delete pod --all
 else
 	echo "starting fresh clusters"
 	gcloud container clusters create cl1 --num-nodes=2
