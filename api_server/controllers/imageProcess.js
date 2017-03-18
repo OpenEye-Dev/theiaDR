@@ -53,7 +53,8 @@ module.exports.gradeImage = function(req, res) {
      console.log('Sending a POST request to ' + GRADE_URL);
      var reqToBeSent = request.post(GRADE_URL, function (err, resp, body) {
           if (err) {
-              console.log('Error!');
+              console.log('Error send POST request to TF Server.');
+              res.status(500).json({'message':'There was an error. Please try again later.'});
             } else {
               res.status(200).send(body);
             }
