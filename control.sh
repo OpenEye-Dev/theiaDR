@@ -1,52 +1,10 @@
 #! /bin/bash
 
-source ../gen-config
+# Load configs and commands
+source ./gen-config
+source ./control-commands
 
 current_dir=$(basename "$PWD")
-
-display_usage() {
-   echo -e "Usage: \n abc \n"
-}
-
-### Commands ------------------------------
-
-AVAILABLE_COMMANDS=(start stop restart resize get)
-
-# start
-start_cluster(){
-   echo "Starting the cluster"
-
-}
-
-# stop
-stop_cluster(){
-   echo "Stopping the cluster"
-
-}
-
-# restart
-restart_cluster(){
-   echo "Restarting the cluster"
-
-}
-
-# resize
-resize_deployment(){
-   echo "Resizing the cluster"
-
-}
-
-# get 
-GET_OPTIONS_LIST=(external-ip other)
-get_options(){
-   echo "Get cluster info"
-  # if option in GET_OPTIONS_LIST, switch
-  
-  # else show usage + print GET_OPTIONS_LIST 
-
-}
-
-# -----------------------------------------
 
 # Program logic
 
@@ -76,11 +34,7 @@ else
        fi
    done   
   
-
-
-   # DISPLAY SERVICES
-   for option in ${SERVICES_PROD[*]};
-   do
-      echo "- $option"
-   done
+   # Calling command function
+   cmd_$CHOSEN_COMMAND  
+ 
 fi
