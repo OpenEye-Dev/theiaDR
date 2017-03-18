@@ -11,7 +11,8 @@ WORKDIR $BASE_PATH
 # Copy files and install dependencies
 COPY . $BASE_PATH
 RUN npm install
+RUN npm install -g nodemon
 
 #CMD ["npm", "start"]
 RUN touch server.log
-CMD ["/bin/sh", "-c", "npm start > server.log"]
+CMD ["/bin/sh", "-c", "nodemon > server.log"]
