@@ -40,8 +40,16 @@ module.exports.gradeImage = function(req, res) {
     console.log('all ok with multer');
     console.log(req.file);
 
+    var GRADE_URL = 'localhost'
     // Pass the image to tensorflow and return JSON with the annotations
-     var reqToBeSent = request.post('http://104.196.39.24:8080/grade', function (err, resp, body) {
+     if(process.env.GRADE_SERVICE_HOST && typeof process.env.GRADE_SERVICE_HOST !== 'undefined'){
+         GRADE_URL = process.env.GRADE_SERVICE_HOST;
+         console.log('Grade service found!');
+     }
+     GRADE_URL += ":" + process.env.GRADE_SERVICE_PORT;
+     GRADE_URL += '/grade';
+     console.log('Sending a POST request to ' + GRADE_URL);
+     var reqToBeSent = request.post(GRADE_URL, function (err, resp, body) {
           if (err) {
               console.log('Error!');
             } else {
