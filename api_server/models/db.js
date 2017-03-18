@@ -8,7 +8,7 @@ if(process.env.DB_SERVICE_HOST && typeof process.env.DB_SERVICE_HOST !== 'undefi
   DB_HOST = process.env.DB_SERVICE_HOST;
   console.log('DB_SERVICE_HOST found!');
 }else{
-  console.log('not found!');
+  console.log('DB_SERVICE_HOST not found - going with local mongodb instead.');
 }
 var dbURI = 'mongodb://' + DB_HOST + ':' + DB_PORT + '/meanAuth';
 console.log(dbURI);
