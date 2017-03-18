@@ -46,7 +46,8 @@ module.exports.gradeImage = function(req, res) {
          GRADE_URL = process.env.GRADE_SERVICE_HOST;
          console.log('Grade service found!');
      }
-     GRADE_URL += ':8080/grade';
+     GRADE_URL += ":" + process.env.GRADE_SERVICE_PORT;
+     GRADE_URL += '/grade';
      console.log('Sending a POST request to ' + GRADE_URL);
      var reqToBeSent = request.post(GRADE_URL, function (err, resp, body) {
           if (err) {
