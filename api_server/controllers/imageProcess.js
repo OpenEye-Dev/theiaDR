@@ -8,7 +8,7 @@
  */
 
 var multer  = require('multer');
-var upload = multer({ dest: 'uploads/' }).single('image');
+var upload = multer().single('image');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 
@@ -37,7 +37,7 @@ module.exports.gradeImage = function(req, res) {
     }
 
     // Everything went fine
-    console.log('all ok with multer');
+    console.log('All ok with multer. Here is the req.file object:');
     console.log(req.file);
 
     var GRADE_URL = 'localhost:8080';   // this is the default case when running locally
@@ -47,9 +47,9 @@ module.exports.gradeImage = function(req, res) {
         // this is the case where it runs in production
         GRADE_URL = 'http://' + process.env.GRADE_SERVICE_HOST;
         GRADE_URL += ":" + process.env.GRADE_SERVICE_PORT;
-        GRADE_URL += '/grade';
         console.log('Grade service found in environment variables!');
      }
+     GRADE_URL += '/grade';
 
      console.log('Sending a POST request to ' + GRADE_URL);
 
@@ -61,9 +61,10 @@ module.exports.gradeImage = function(req, res) {
               res.status(200).send(body);   // just forward the result from the TF server back to the client
             }
           });
-     
+
           var form = reqToBeSent.form();
-          form.append('file', fs.createReadStream(req.file.path));
+          // form.append('file', fs.createReadStream(req.file.path));
+          form.append('file', req.file.buffer);
     });
 }
 

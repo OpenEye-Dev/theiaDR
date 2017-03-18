@@ -11,9 +11,9 @@ import tensorflow as tf
 label_lines = ["healthy", "unhealthy"]
 
 with tf.gfile.FastGFile("output_graph.pb", 'rb') as f:
-    graph_def = tf.GraphDef()
-    graph_def.ParseFromString(f.read())
-    _ = tf.import_graph_def(graph_def, name='')
+  graph_def = tf.GraphDef()
+  graph_def.ParseFromString(f.read())
+  _ = tf.import_graph_def(graph_def, name='')
 
 sess = tf.Session()
 softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
@@ -27,40 +27,34 @@ def index():
 
 @app.route('/grade', methods=['POST'])
 def grade():
-    # Feed the image_data as input to the graph and get first prediction
-    try:
-      image_data = request.files.get('file')
-      # BETTER METHOD: Convert to bytearray and then to string 
-      # this is what FastGFile returns
-      image_data = str(bytearray(image_data.read()))
+  if not request.files.has_key('image'):
+    return jsonify({'message':'Incorrect fileobject name. Use "image"'})
+  # Feed the image_data as input to the graph and get first prediction
+  image_data = request.files.get('image')
+  # BETTER METHOD: Convert to bytearray and then to string 
+  # this is what FastGFile returns
+  image_data = str(bytearray(image_data.read()))
 
-      predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
-      # Sort to show labels of first prediction in order of confidence
-      top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
-    except:
-      return jsonify({'message':'There was an error at TF Server.'})
+  predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
+  # Sort to show labels of first prediction in order of confidence
+  top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
 
-    """ EXTREMELY INEFFICIENT STEP: SAVING A FILE TO DISK AND THEN READING IT AGAIN """
-    '''
-    image_data.save('data.jpg')
-    image_data = tf.gfile.FastGFile('data.jpg', 'rb').read()
-    '''
+  # Convert to bytearray and then to string 
+  # this is what tf.gfile.FastGFile returns
+  image_data = str(bytearray(image_data))
 
-    # BETTER METHOD: Convert to bytearray and then to string 
-    # this is what FastGFile returns
-    image_data = str(bytearray(image_data))
+  predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
+  # Sort to show labels of first prediction in order of confidence
+  top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
 
-    predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
-    # Sort to show labels of first prediction in order of confidence
-    top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
+  grade_dict = {}
 
-    grade_dict = {}
-    for node_id in top_k:
-    	human_string = label_lines[node_id]
-    	score = predictions[0][node_id]
-        grade_dict[human_string] = float(score)
-    	# print('%s (score = %.5f)' % (human_string, score))
-    return jsonify(grade_dict)
+  for node_id in top_k:
+    human_string = label_lines[node_id]
+    score = predictions[0][node_id]
+    grade_dict[human_string] = float(score)
+
+  return jsonify(grade_dict)
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=int("8080"), debug=True)
