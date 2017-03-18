@@ -4,7 +4,13 @@
 cd kubernetes
 
 # create cluster
-gcloud container clusters create cl1 --num-nodes=2
+if [ $1 == 'restart' ]
+then 
+	echo "restarting cluster"
+else
+	echo "starting fresh clusters"
+	gcloud container clusters create cl1 --num-nodes=2
+fi
 
 # mongo, grade and api server
 # sleep are added in order to give time to the db to start
