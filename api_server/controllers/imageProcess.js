@@ -48,17 +48,20 @@ module.exports.gradeImage = function(req, res) {
         GRADE_URL = 'http://' + process.env.GRADE_SERVICE_HOST;
         GRADE_URL += ":" + process.env.GRADE_SERVICE_PORT;
         GRADE_URL += '/grade';
-        console.log('Grade service found!');
+        console.log('Grade service found in environment variables!');
      }
+
      console.log('Sending a POST request to ' + GRADE_URL);
+
      var reqToBeSent = request.post(GRADE_URL, function (err, resp, body) {
           if (err) {
               console.log('Error send POST request to TF Server.');
               res.status(500).json({'message':'There was an error. Please try again later.'});
             } else {
-              res.status(200).send(body);
+              res.status(200).send(body);   // just forward the result from the TF server back to the client
             }
           });
+     
           var form = reqToBeSent.form();
           form.append('file', fs.createReadStream(req.file.path));
     });
