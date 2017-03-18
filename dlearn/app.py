@@ -21,6 +21,10 @@ softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
 # define the server and handle requests
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+def index():
+  return "The Tensorflow server is working."
+
 @app.route('/grade', methods=['POST'])
 def grade():
     # Feed the image_data as input to the graph and get first prediction
