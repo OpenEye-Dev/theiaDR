@@ -8,7 +8,7 @@ This server accepts POST requests for authentication (or creating an account), r
 
 ### Image grading and annotation
 
-* `/api/grade` - expects a valid bearer token and a multipart form containing image as `uploadedImage`. Send using `curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE’ -F "image=@/path/to/image.extension" localhost:8080/api/grade`
+* `/api/grade` - expects a valid bearer token and a multipart form containing image as `image`. Send using `curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE’ -F "image=@/path/to/image.extension" localhost:8080/api/grade`
 * `/api/annotation` - send JSON with annotations along with valid bearer token.
 
 
