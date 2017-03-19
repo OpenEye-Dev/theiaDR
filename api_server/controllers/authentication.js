@@ -28,12 +28,8 @@ module.exports.register = function(req, res) {
             user.username = req.body.username;
             user.setPassword(req.body.password);
             user.save(function(err) {
-              var token;
-              token = user.generateJwt();
               res.status(200);
-              res.json({
-                "token" : token
-              });
+              res.json(user.generateJwt());
             });
           } else {
             res.status(400).json({'message':'incorrect signup code'});
@@ -55,11 +51,8 @@ module.exports.login = function(req, res) {
 
     // If a user is found
     if(user){
-      token = user.generateJwt();
       res.status(200);
-      res.json({
-        "token" : token
-      });
+      res.json(user.generateJwt());
     } else {
       // If user is not found
       res.status(401).json(info);

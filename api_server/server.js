@@ -18,7 +18,6 @@
 // basic config
 const PORT = 8080;
 const SECRET = 'thisShouldNotBeHere';   // TODO: Remove this when setting up production environment
-const TOKENTIME = 120 * 60; // in seconds
 
 // modules
 const bodyParser = require('body-parser');

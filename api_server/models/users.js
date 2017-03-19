@@ -27,11 +27,14 @@ userSchema.methods.validPassword = function(password) {
 };
 
 userSchema.methods.generateJwt = function() {
-  return jwt.sign({
-    _id: this._id
-  }, "MY_SECRET", {
-    expiresIn: TOKENTIME
-  }); // DO NOT KEEP YOUR SECRET IN THE CODE!
+  return {
+      'token': jwt.sign({
+      _id: this._id
+    }, "MY_SECRET", {
+      expiresIn: TOKENTIME
+    }), // DO NOT KEEP YOUR SECRET IN THE CODE!
+      'expiresIn': TOKENTIME
+  }
 };
 
 mongoose.model('User', userSchema);
