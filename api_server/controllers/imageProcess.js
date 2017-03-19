@@ -63,6 +63,9 @@ module.exports.gradeImage = function(req, res) {
           });
 
           var form = reqToBeSent.form();
+
+          // Now send the buffer object from multer - but need to add some extra stuff to make the request work
+          // CREDITS: http://stackoverflow.com/questions/13797670/nodejs-post-request-multipart-form-data
           form.append('image', req.file.buffer, {contentType: req.file.mimetype, filename: req.file.originalname});
     });
 }
