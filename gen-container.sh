@@ -1,6 +1,6 @@
 #! /bin/bash
 
-source ./gen-config
+source ./project-config
 
 current_dir=$(basename "$PWD")
 

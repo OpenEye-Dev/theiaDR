@@ -5,5 +5,5 @@ GIT_PROJECT=code-scale-image-api-server
 GIT_URL=https://github.com/${GIT_USER}/${GIT_PROJECT}.git
 GCLOUD_PROJECT=medical-image-grading-api
 DEV_USER=$(echo $USER | tr '[:upper:]' '[:lower:]')
-DEPLOYMENTS_PROD=(db web grade)
+DEPLOYMENTS_PROD=(web grade)
 
