@@ -61,7 +61,7 @@ cmd_stop(){
    echo "Stopping the cluster"
    
    cmd_clean
-   
+   sleep 10 
    # Tear down the cluster
    gcloud container clusters delete cl1
    
@@ -77,13 +77,38 @@ cmd_restart(){
 
 # resize
 cmd_resize(){
-   echo "Resizing deployment of..."
+   clear
 
    # DISPLAY DEPLOYMENTS
-   for option in ${DEPLOYMENTS_PROD[*]};
+   while : ;
    do
-      echo "- $option"
-   done
+       echo "Current status:"
+       kubectl get deploy
+
+       echo -e "\nResizing deployment of..."
+       for ((i=1;i <= ${#DEPLOYMENTS_PROD[@]}; i++));
+       do
+           echo $i. ${DEPLOYMENTS_PROD[i-1]}
+       done
+       read choice
+       if [[ $choice =~ ^[0-9]+$ && ${choice} -gt 0 && ${choice} -lt ${#DEPLOYMENTS_PROD[@]}+1 ]]
+       then
+           CHOSEN_DEPLOY=${DEPLOYMENTS_PROD[$choice-1]/.\//}
+           break
+       else
+          clear
+          echo -e "Unrecognized command. Type a number among the one shown below.\n"
+       fi
+   done  
+   
+   echo "Scaling $CHOSEN_DEPLOY to..."
+   read scale_choice
+   if [[ $scale_choice =~ ^[0-9]+$ && ${scale_choice} -gt -1 ]]
+   then
+      kubectl scale deploy $CHOSEN_DEPLOY --replicas=$scale_choice
+   else
+      echo -e "'${scale_choice}' is not a valid number."
+   fi   
 }
 
 cmd_external-ip(){
