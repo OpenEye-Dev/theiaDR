@@ -6,7 +6,7 @@ display_usage() {
 
 ### Commands ------------------------------
 
-AVAILABLE_COMMANDS=(start_all start_processes stop clean restart resize get)
+export AVAILABLE_COMMANDS=(start_all start_processes stop clean restart resize get)
 
 # In order to insert a new command, add it to the previus array
 # and create a new function called cmd_NAME
@@ -44,11 +44,11 @@ cmd_start_all(){
 cmd_clean(){
    echo "Cleaning kubernetes processes"
 
-   # Clean deploy, svc, rc and pods$
-   kubectl delete deploy --all$
-   kubectl delete svc --all$
-   kubectl delete rc --all$
-   kubectl delete pod --all$
+   # Clean deploy, svc, rc and pods
+   kubectl delete deploy --all
+   kubectl delete svc --all
+   kubectl delete rc --all
+   kubectl delete po --all
 }
 
 # stop
@@ -66,6 +66,7 @@ cmd_stop(){
 cmd_restart(){
    echo "Restarting the cluster"
    cmd_clean
+   sleep 35
    cmd_start_processes 
 }
 

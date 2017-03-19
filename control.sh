@@ -21,7 +21,7 @@ else
        echo "Choose a command using its number:"
        for ((i=1;i < ${#AVAILABLE_COMMANDS[@]}; i++));
        do
-           echo $i. ${AVAILABLE_COMMANDS[i]}
+           echo $i. ${AVAILABLE_COMMANDS[i-1]}
        done
        read choice
        if [[ $choice =~ ^[0-9]+$ && ${choice} -gt 0 && ${choice} -lt ${#AVAILABLE_COMMANDS[@]} ]]
