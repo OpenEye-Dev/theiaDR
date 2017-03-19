@@ -6,10 +6,15 @@ display_usage() {
 
 ### Commands ------------------------------
 
-export AVAILABLE_COMMANDS=(start_all start_processes stop clean restart resize get)
+export AVAILABLE_COMMANDS=(start_all start_processes stop clean restart resize get exit)
 
 # In order to insert a new command, add it to the previus array
 # and create a new function called cmd_NAME
+
+# Controlled exit
+cmd_exit(){
+   exit 0
+}
 
 # create_cluster
 cmd_create_cluster(){
@@ -81,15 +86,36 @@ cmd_resize(){
    done
 }
 
+cmd_external-ip(){
+   kubectl get svc | awk -F" " '$3~/^[0-9]/ {print $1,$3}'
+}
+
 # get
 cmd_get(){
-   GET_OPTIONS_LIST=(external-ip other)
-   
-   echo "Get cluster info"
+   GET_OPTIONS_LIST=(external-ip exit)
+   clear
+   echo "Available cluster info"
    # if option in GET_OPTIONS_LIST, switch 
-
-   # else show usage and  print GET_OPTIONS_LIST
-
+   # Display commands and let user choose
+   while : ;
+   do
+       echo "Choose a command using its number:"
+       for ((i=1;i <= ${#GET_OPTIONS_LIST[@]}; i++));
+       do
+           echo $i. ${GET_OPTIONS_LIST[i-1]}
+       done
+       read choice
+       if [[ $choice =~ ^[0-9]+$ && ${choice} -gt 0 && ${choice} -lt ${#GET_OPTIONS_LIST[@]}+1 ]]
+       then
+           CHOSEN_OPTION=${GET_OPTIONS_LIST[$choice-1]/.\//}
+           break
+       else
+          clear
+          echo -e "Unrecognized command. Type a number among the one shown below.\n"
+       fi
+   done
+   
+   cmd_$CHOSEN_OPTION
 }
 
 # -----------------------------------------
