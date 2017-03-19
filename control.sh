@@ -24,9 +24,9 @@ else
            echo $i. ${AVAILABLE_COMMANDS[i-1]}
        done
        read choice
-       if [[ $choice =~ ^[0-9]+$ && ${choice} -gt 0 && ${choice} -lt ${#AVAILABLE_COMMANDS[@]} ]]
+       if [[ $choice =~ ^[0-9]+$ && ${choice} -gt 0 && ${choice} -lt ${#AVAILABLE_COMMANDS[@]}+1 ]]
        then
-           CHOSEN_COMMAND=${AVAILABLE_COMMANDS[$choice]/.\//}
+           CHOSEN_COMMAND=${AVAILABLE_COMMANDS[$choice-1]/.\//}
            break
        else
           clear
