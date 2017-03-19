@@ -28,7 +28,7 @@ def index():
 @app.route('/grade', methods=['POST'])
 def grade():
   if not request.files.has_key('image'):
-    return jsonify({'message':'Incorrect fileobject name. Use "image"'})
+    return jsonify({'message':'Incorrect fileobject key in POST request. Use - image'})
   # Feed the image_data as input to the graph and get first prediction
   image_data = request.files.get('image')
   # BETTER METHOD: Convert to bytearray and then to string 
