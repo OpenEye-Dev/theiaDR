@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Load configs and commands
-source ./gen-config
+source ./project-config
 source ./control-commands
 
 current_dir=$(basename "$PWD")
@@ -19,14 +19,14 @@ else
    while : ;
    do
        echo "Choose a command using its number:"
-       for ((i=1;i < ${#AVAILABLE_COMMANDS[@]}; i++));
+       for ((i=1;i <= ${#AVAILABLE_COMMANDS[@]}; i++));
        do
            echo $i. ${AVAILABLE_COMMANDS[i-1]}
        done
        read choice
-       if [[ $choice =~ ^[0-9]+$ && ${choice} -gt 0 && ${choice} -lt ${#AVAILABLE_COMMANDS[@]} ]]
+       if [[ $choice =~ ^[0-9]+$ && ${choice} -gt 0 && ${choice} -lt ${#AVAILABLE_COMMANDS[@]}+1 ]]
        then
-           CHOSEN_COMMAND=${AVAILABLE_COMMANDS[$choice]/.\//}
+           CHOSEN_COMMAND=${AVAILABLE_COMMANDS[$choice-1]/.\//}
            break
        else
           clear
