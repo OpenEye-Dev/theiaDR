@@ -32,7 +32,7 @@ module.exports.gradeImage = function(req, res) {
     if (err) {
       // An error occurred when uploading
       console.log(err);
-      res.status().send('An error occurred. Please check the filename field and file sent.');
+      res.status(400).json({'message': 'Error! Please check the filename field and file sent.'});
       return;
     }
 
@@ -63,8 +63,7 @@ module.exports.gradeImage = function(req, res) {
           });
 
           var form = reqToBeSent.form();
-          // form.append('file', fs.createReadStream(req.file.path));
-          form.append('file', req.file.buffer);
+          form.append('image', req.file.buffer, {contentType: req.file.mimetype, filename: req.file.originalname});
     });
 }
 
