@@ -1,0 +1,94 @@
+#! /bin/bash
+
+display_usage() {
+   echo -e "Usage: \n bla bla bla... \n"
+}
+
+### Commands ------------------------------
+
+AVAILABLE_COMMANDS=(start_all start_processes stop clean restart resize get)
+
+# In order to insert a new command, add it to the previus array
+# and create a new function called cmd_NAME
+
+# create_cluster
+cmd_create_cluster(){
+    echo "Creating a new cluster"
+    gcloud container clusters create cl1 --num-nodes=2
+}
+
+# start_processes
+cmd_start_processes(){
+   echo "Starting kubernetes processes"
+   
+   cd kubernetes
+    
+   # mongo, grade and api server
+   # sleep are added in order to give time to the db to start
+   sleep 1
+   kubectl create -f db.yml
+   sleep 5
+   kubectl create -f grade.yml
+   sleep 2
+   kubectl create -f web.yml
+
+}
+
+# start_all
+cmd_start_all(){
+   cmd_create_cluster
+   cmd_start_processes
+}
+
+# clean
+cmd_clean(){
+   echo "Cleaning kubernetes processes"
+
+   # Clean deploy, svc, rc and pods$
+   kubectl delete deploy --all$
+   kubectl delete svc --all$
+   kubectl delete rc --all$
+   kubectl delete pod --all$
+}
+
+# stop
+cmd_stop(){
+   echo "Stopping the cluster"
+   
+   cmd_clean
+   
+   # Tear down the cluster
+   gcloud container clusters delete cl1
+   
+}
+
+# restart
+cmd_restart(){
+   echo "Restarting the cluster"
+   cmd_clean
+   cmd_start_processes 
+}
+
+# resize
+cmd_resize(){
+   echo "Resizing deployment of..."
+
+   # DISPLAY DEPLOYMENTS
+   for option in ${DEPLOYMENTS_PROD[*]};
+   do
+      echo "- $option"
+   done
+}
+
+# get
+cmd_get(){
+   GET_OPTIONS_LIST=(external-ip other)
+   
+   echo "Get cluster info"
+   # if option in GET_OPTIONS_LIST, switch 
+
+   # else show usage and  print GET_OPTIONS_LIST
+
+}
+
+# -----------------------------------------
