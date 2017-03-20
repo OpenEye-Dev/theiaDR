@@ -6,7 +6,7 @@ display_usage() {
 
 ### Commands ------------------------------
 
-export AVAILABLE_COMMANDS=(start_all start_processes stop clean restart resize get exit)
+export AVAILABLE_COMMANDS=(start_all start_processes stop_all stop_processes restart resize get exit)
 
 # In order to insert a new command, add it to the previus array
 # and create a new function called cmd_NAME
@@ -45,8 +45,8 @@ cmd_start_all(){
    cmd_start_processes
 }
 
-# clean
-cmd_clean(){
+# stop_processes
+cmd_stop_processes(){
    echo "Cleaning kubernetes processes"
 
    # Clean deploy, svc, rc and pods
@@ -56,11 +56,11 @@ cmd_clean(){
    kubectl delete po --all
 }
 
-# stop
-cmd_stop(){
+# stop_all
+cmd_stop_all(){
    echo "Stopping the cluster"
    
-   cmd_clean
+   cmd_stop_processes
    sleep 10 
    # Tear down the cluster
    gcloud container clusters delete cl1
@@ -70,7 +70,7 @@ cmd_stop(){
 # restart
 cmd_restart(){
    echo "Restarting the cluster"
-   cmd_clean
+   cmd_stop_processes
    sleep 35
    cmd_start_processes 
 }
@@ -80,6 +80,7 @@ cmd_resize(){
    clear
 
    # DISPLAY DEPLOYMENTS
+   # Available deployments are listed in an array in project-config
    while : ;
    do
        echo "Current status:"
