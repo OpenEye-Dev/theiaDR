@@ -241,24 +241,27 @@
 		      $('#grading-error-messages').html('ERROR:' + error.responseJSON.message)
 		  },
 			success : function(data) {
-				// check if healthy or unhealthy
-				if (data.healthy > data.unhealthy) {
-					$('#prediction').removeClass();
-					$('#prediction').addClass('predict_healthy');
-					$('#prediction').html('Healthy');
-				} else {
-					$('#prediction').removeClass();
-					$('#prediction').addClass('predict_unhealthy');
-					$('#prediction').html('Unhealthy');
-				}
-
 				console.log(data);
 				if (data.message == 'OK') {
+					// check if healthy or unhealthy
+					if (data.healthy > data.unhealthy) {
+						$('#prediction').removeClass();
+						$('#prediction').addClass('predict_healthy');
+						$('#prediction').html('Healthy');
+					} else {
+						$('#prediction').removeClass();
+						$('#prediction').addClass('predict_unhealthy');
+						$('#prediction').html('Unhealthy');
+					}
+				
 					// append the probabilities
 					if ($('#gprobs').children().children().length > 1) {
 					  $('#gprobs').children().children()[1].remove();
 					}
 					$('#gprobs').append('<tr><td>' + Math.round(10000*data.healthy, 2)/100 + '%</td><td>' + Math.round(10000*data.unhealthy, 2)/100 + '%</td></tr>');
+					$('#loading-server-grade').css('opacity', 0);
+				} else {
+					$('#grading-error-messages').html('ERROR:' + data.message);
 					$('#loading-server-grade').css('opacity', 0);
 				}
 			},
@@ -280,6 +283,12 @@
 
 		clearScreenVariables();
 		showWelcomePleasantries();
+	}
+
+	var cleanGradeVariables = function() {
+		// clean up the grading variables
+		// called when a new grading request is sent
+
 	}
 
 	var clearScreenVariables = function() {

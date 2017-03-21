@@ -38,7 +38,7 @@ def grade():
   # if it is not jpg, convert to it and continue
   CURRENT_IMAGE_FORMAT = imghdr.what(image_data)
   if not CURRENT_IMAGE_FORMAT in ALLOWED_IMAGE_FORMATS:
-    return jsonify({'message': 'Image format not allowed'}), 400
+    return jsonify({'message': 'Image format not allowed at present.'}), 400
 
   # BETTER METHOD: Convert to bytearray and then to string 
   # this is what FastGFile returns
