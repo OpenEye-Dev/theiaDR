@@ -2,9 +2,11 @@
   This is a simple Flask app to test whether a tensorflow model can be served
 '''
 from flask import Flask, request, Response, jsonify
-import os, io
+import os, io, imghdr
 import numpy as np
 import tensorflow as tf
+
+ALLOWED_IMAGE_FORMATS = ['jpg', 'jpeg'] # , 'png', 'tiff'
 
 # Get the model
 # A list of the actual labels
@@ -31,6 +33,13 @@ def grade():
     return jsonify({'message':'Incorrect fileobject key in POST request. Use - image'})
   # Feed the image_data as input to the graph and get first prediction
   image_data = request.files.get('image')
+
+  # check the image format for specific formats
+  # if it is not jpg, convert to it and continue
+  CURRENT_IMAGE_FORMAT = imghdr.what(image_data)
+  if not CURRENT_IMAGE_FORMAT in ALLOWED_IMAGE_FORMATS:
+    return jsonify({'message': 'Image format not allowed'}), 400
+
   # BETTER METHOD: Convert to bytearray and then to string 
   # this is what FastGFile returns
   image_data = str(bytearray(image_data.read()))
@@ -47,7 +56,7 @@ def grade():
   # Sort to show labels of first prediction in order of confidence
   top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
 
-  grade_dict = {}
+  grade_dict = {'message': 'OK'}    # to be sent to indicate that everything happened alright
 
   for node_id in top_k:
     human_string = label_lines[node_id]

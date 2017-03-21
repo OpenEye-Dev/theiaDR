@@ -252,12 +252,15 @@
 					$('#prediction').html('Unhealthy');
 				}
 
-				// append the probabilities
-				if ($('#gprobs').children().children().length > 1) {
-				  $('#gprobs').children().children()[1].remove();
+				console.log(data);
+				if (data.message == 'OK') {
+					// append the probabilities
+					if ($('#gprobs').children().children().length > 1) {
+					  $('#gprobs').children().children()[1].remove();
+					}
+					$('#gprobs').append('<tr><td>' + Math.round(10000*data.healthy, 2)/100 + '%</td><td>' + Math.round(10000*data.unhealthy, 2)/100 + '%</td></tr>');
+					$('#loading-server-grade').css('opacity', 0);
 				}
-				$('#gprobs').append('<tr><td>' + Math.round(10000*data.healthy, 2)/100 + '%</td><td>' + Math.round(10000*data.unhealthy, 2)/100 + '%</td></tr>');
-				$('#loading-server-grade').css('opacity', 0);
 			},
 			dataType: 'json'
 		});
