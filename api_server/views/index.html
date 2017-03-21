@@ -253,7 +253,7 @@
 						$('#prediction').addClass('predict_unhealthy');
 						$('#prediction').html('Unhealthy');
 					}
-				
+
 					// append the probabilities
 					if ($('#gprobs').children().children().length > 1) {
 					  $('#gprobs').children().children()[1].remove();
@@ -364,7 +364,11 @@
 			data: JSON.stringify({ username: $('#username').val(), password: $('#password').val()}),
 			error: function(error){
 		      console.log("Error (" + error.status + " - " + error.statusText + "): " + error.responseJSON.message);
-		      $('#login-error-messages').html('Incorrect Username or Password');
+		      if (error.status == '401') {
+		      	$('#login-error-messages').html('Incorrect Username or Password');
+		      } else if (error.status == '500') {
+		      	$('#login-error-messages').html(error.responseJSON.message);
+		      }		      
 		  },
 			success : function(data) {
 				setLocalStorage(data);
