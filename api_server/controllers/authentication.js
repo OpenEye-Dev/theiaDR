@@ -10,8 +10,13 @@ var sendJSONresponse = function(res, status, content) {
 };
 
 module.exports.register = function(req, res) {
-  // TODO: Check if this username is already there in the db
-  User.findOne({ username: req.body.username }, function (err, user) {
+  // check if username or password are empty
+  if (req.body.username == '' || req.body.password == '') {
+    res.status(401).json({'message': 'username or password cannot be empty'});
+  } else if (req.body.signupCode == '' || req.body.signupCode == undefined) {
+    res.status(400).json({'message':'signup code missing'});
+  } else {
+      User.findOne({ username: req.body.username }, function (err, user) {
       if (err) { res.send(err); }
       // Return if user not found in database
       if (user) {
@@ -20,23 +25,20 @@ module.exports.register = function(req, res) {
         });
       } else {
         // check if signupCode is correct
-        if (req.body.signupCode == undefined) {
-          res.status(400).json({'message':'signup code missing'});
+        if (SIGNUP_CODES.indexOf(req.body.signupCode) != -1) {
+          var user = new User();
+          user.username = req.body.username;
+          user.setPassword(req.body.password);
+          user.save(function(err) {
+            res.status(200);
+            res.json(user.generateJwt());
+          });
         } else {
-          if (SIGNUP_CODES.indexOf(req.body.signupCode) != -1) {
-            var user = new User();
-            user.username = req.body.username;
-            user.setPassword(req.body.password);
-            user.save(function(err) {
-              res.status(200);
-              res.json(user.generateJwt());
-            });
-          } else {
-            res.status(400).json({'message':'incorrect signup code'});
-          } 
+          res.status(400).json({'message':'incorrect signup code'});
         }
       }
     });
+  }
 };
 
 module.exports.login = function(req, res) {
