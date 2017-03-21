@@ -5,8 +5,15 @@ from flask import Flask, request, Response, jsonify
 import os, io, imghdr
 import numpy as np
 import tensorflow as tf
+from PIL import Image
 
-ALLOWED_IMAGE_FORMATS = ['jpg', 'jpeg'] # , 'png', 'tiff'
+ALLOWED_IMAGE_FORMATS = ['jpg', 'jpeg', 'png', 'tiff']
+
+def convertToJpeg(imdata):
+    with io.BytesIO() as f:
+        im = Image.open(imdata)
+        im.save(f, format='JPEG')
+        return f.getvalue()
 
 # Get the model
 # A list of the actual labels
@@ -40,9 +47,15 @@ def grade():
   if not CURRENT_IMAGE_FORMAT in ALLOWED_IMAGE_FORMATS:
     return jsonify({'message': 'Image format not allowed at present.'}), 400
 
-  # BETTER METHOD: Convert to bytearray and then to string 
-  # this is what FastGFile returns
-  image_data = str(bytearray(image_data.read()))
+  # handle non-JPG image formats
+  if not CURRENT_IMAGE_FORMAT in ['jpg', 'jpeg']:
+    # convert to JPEG and pass on
+    # REF: http://stackoverflow.com/questions/31409506/python-convert-from-png-to-jpg-without-saving-file-to-disk-using-pil
+    image_data = convertToJpeg(image_data)
+  else:
+    # Convert to bytearray and then to string 
+    # this is what FastGFile returns
+    image_data = str(bytearray(image_data.read()))
 
   predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
   # Sort to show labels of first prediction in order of confidence
