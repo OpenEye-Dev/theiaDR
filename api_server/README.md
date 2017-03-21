@@ -78,7 +78,7 @@ Next - we need to set the environment variable corresponding to the IP address t
 `docker inspect <TF_MODEL_CONTAINER_ID> | grep  \”IPAddress`  
   
 Copy this IP address (e.g. 172.17.0.5) and run the following command inside the node container bash which you opened in the previous step:  
-```
+```bash
 export GRADE_SERVICE_HOST=172.17.0.5
 export GRADE_SERVICE_PORT=8080
 ```
