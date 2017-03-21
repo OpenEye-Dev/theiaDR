@@ -64,7 +64,7 @@ app.use(function (req, res, next) {
 
 app.get('/', function(req, res) {
   // res.status(200).send('You are lost. Please contact your system administrator.');
-  res.sendFile(path.join(__dirname + '/views/jwttest.html'));
+  res.sendFile(path.join(__dirname + '/views/index.html'));
 });
 
 app.use('/api', routesApi);

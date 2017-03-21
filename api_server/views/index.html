@@ -1,0 +1,377 @@
+<html>
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<style type="text/css">
+/* NAVBAR */
+.navbar {
+	background: #ADD8E6;
+}
+
+.navbar .navbar-brand, #nav-menu-username, .white {
+	color: white !important; 
+}
+
+/* BODY */
+.screen {
+	margin-top: 100px;
+}
+
+/* IMAGE UPLOADING */
+/* ref: http://jsfiddle.net/ELcf6/4/ */
+.uploader {
+	position: relative; 
+	overflow: hidden; 
+	height: 70%; 
+	background: #f3f3f3; 
+	border: 5px dashed #e8e8e8;
+}
+
+#filePhoto{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -50px;
+    left: 0;
+    z-index: 2;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.uploader:active, .uploader:hover {
+	border: 5px dashed green;
+}
+
+.uploader img{
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: -1px;
+    left: -1px;
+    z-index: 1;
+    border: none;
+}
+
+.predict_healthy {
+	color: green;
+}
+.predict_unhealthy {
+	color: red;
+}
+</style>
+<body>
+	<nav class="navbar navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">OpenDoc</a>
+			</div>
+			<ul class="nav navbar-nav navbar-right" id="user-menu">
+		      <li class="dropdown">
+		        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+		        	<span id="nav-menu-username"></span><span class="caret white"></span>
+		        </a>
+		        <ul class="dropdown-menu">
+		          <li><a href="#">My Profile</a></li>
+		          <li><a href="#">Settings</a></li>
+		          <li class="divider"></li>
+		          <li><a href="#" onclick="logOutUser()">Logout</a></li>
+		        </ul>
+		      </li>
+		    </ul>	
+		</div>
+	</nav>
+
+	<div class="container screen" id="login-screen">
+		<form class="form-horizontal" id="login_form">
+		  <div class="text-center" style="margin-bottom:15px">
+		  	<span class="h1">Login</span> or <a href="#" onclick="showScreen('#signup-screen')">signup</a>
+		  </div>
+		  <div class="form-group">
+		    <label class="control-label col-sm-2" for="username">Username:</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="username" placeholder="Enter username">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="control-label col-sm-2" for="password">Password:</label>
+		    <div class="col-sm-10"> 
+		      <input type="password" class="form-control" id="password" placeholder="Enter password">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		  	<div class="col-sm-offset-2 col-sm-10" id="login-error-messages" style="color:red"></div>
+		  </div>
+		  <div class="form-group"> 
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button class="btn btn-default" onclick="doLogin()">Login</button>
+		    </div>
+		  </div>
+		</form>
+	</div>
+
+	<div class="container screen hide" id="signup-screen">
+		<form class="form-horizontal" id="signup_form">
+		  <div class="text-center" style="margin-bottom:15px">
+		  	<span class="h1">Signup</span> or <a href="#" onclick="showScreen('#login-screen')">login</a>
+		  </div>
+		  <div class="form-group">
+		    <label class="control-label col-sm-2" for="username">Username:</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="username_signup" placeholder="Choose username">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="control-label col-sm-2" for="password">Password:</label>
+		    <div class="col-sm-10"> 
+		      <input type="password" class="form-control" id="password_signup" placeholder="Choose password">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="control-label col-sm-2" for="signup-code">Enter Signup Code:</label>
+		    <div class="col-sm-10"> 
+		      <input type="password" class="form-control" id="code_signup" placeholder="Please enter the signup code you were given">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		  	<div class="col-sm-offset-2 col-sm-10" id="signup-error-messages" style="color:red"></div>
+		  </div>
+		  <div class="form-group"> 
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button class="btn btn-default" onclick="doSignup()">Register</button>
+		    </div>
+		  </div>
+		</form>
+	</div>
+
+	<div class="container screen hide" id="grading-screen">
+		<!-- ref: http://stackoverflow.com/questions/25092981/drag-drop-images-input-file-and-preview-before-upload -->
+		<!-- ref: http://jsfiddle.net/ELcf6/4/ -->
+		<form class="uploader col-md-8" id="image-grade-form">
+		    <h2 class="h2">click here to upload or drag your image here</h2>
+		    <img src="" id="uploaded-image-preview" />
+		    <input type="file" name="image" id="filePhoto" onchange="handleImage(this)"/>
+		</form>
+		<div class="col-md-4">
+			<div class="col-md-2" style="margin-top:10px">
+		      <button class="btn btn-default" id="sendGradeButton" onclick="doCloudGrading()" disabled="true">Grade</button>
+		    </div>
+		    <div class="col-md-10"><img id="loading-server-grade" style="width:100%; opacity:0" src="/img/loading.gif"/></div>
+	      <p style="margin-top:15px; color:red" id="grading-error-messages"></p>
+	      <h3 class="h3">Prediction: <span id="prediction" class="prediction_text"></span></h3>
+	      <table class="table table-bordered" id='gprobs'>
+		  	<tr>
+			  	<th>Healthy</th>
+			 	<th>Unhealthy</th>
+			</tr>
+		  </table>
+	    </div>
+	</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script>
+	// send login request
+	$(document).ready(function() {
+		// prevent page refresh on clicking submit
+		$("#login_form").submit(function(e) {
+		    e.preventDefault();
+		    $('#login-error-messages').html("");
+		});
+
+		$("#signup_form").submit(function(e) {
+		    e.preventDefault();
+		    $('#signup-error-messages').html("");
+		});
+
+		showWelcomePleasantries();
+
+		// make the grade button enabled only if form is non-empty
+		$("#filePhoto").on("change", function() {
+		  ($(this).val() === "") ? false : $("#sendGradeButton").prop("disabled", false);
+		});
+
+		// if the token is still valid, just go to the grading page
+		if (!checkTokenExpired()) {
+			// user is properly logged in
+			showWelcomePleasantries();
+			showScreen('#grading-screen');
+		}
+	});
+
+	var showScreen = function(screen_id) {
+		clearScreenVariables();
+		var screens = ['#login-screen', '#signup-screen', '#grading-screen'];
+		for (i = 0; i < screens.length; i++) {
+			$(screens[i]).addClass('hide');
+		}
+
+		$(screen_id).removeClass('hide');
+	}
+
+	var handleImage = function (input) {
+	    if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#uploaded-image-preview').attr('src', e.target.result)
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+	}
+
+	var doCloudGrading = function() {
+		// send the image to the backend for grading and authorization
+		var data = new FormData($('#image-grade-form')[0]);
+		$('#grading-error-messages').html("");
+		$('#prediction').html("");
+		$('#loading-server-grade').css('opacity', 1);
+
+		$.ajax({
+			type: "POST",
+			url: '/api/grade',
+			cache:false,
+			contentType: false,
+        	processData: false,  // Important!
+        	enctype: "multipart/form-data",
+        	headers: {
+		        'Authorization': "Bearer " + localStorage.openDocToken
+		    },
+			data: data,
+			error: function(error){
+		      console.log("Error (" + error.status + " - " + error.statusText + "): " + error.responseJSON.message);
+		      $('#grading-error-messages').html('ERROR:' + error.responseJSON.message)
+		  },
+			success : function(data) {
+				// check if healthy or unhealthy
+				if (data.healthy > data.unhealthy) {
+					$('#prediction').removeClass();
+					$('#prediction').addClass('predict_healthy');
+					$('#prediction').html('Healthy');
+				} else {
+					$('#prediction').removeClass();
+					$('#prediction').addClass('predict_unhealthy');
+					$('#prediction').html('Unhealthy');
+				}
+
+				// append the probabilities
+				if ($('#gprobs').children().children().length > 1) {
+				  $('#gprobs').children().children()[1].remove();
+				}
+				$('#gprobs').append('<tr><td>' + Math.round(10000*data.healthy, 2)/100 + '%</td><td>' + Math.round(10000*data.unhealthy, 2)/100 + '%</td></tr>');
+				$('#loading-server-grade').css('opacity', 0);
+			},
+			dataType: 'json'
+		});
+	}
+
+	var setLocalStorage = function(data) {
+		// save token, expiry time and timestamp so that the webapp can 
+		// know when to show the login screen again
+		localStorage.setItem("openDocToken", data.token);
+		localStorage.setItem("openDocTokenExpiryTime", data.expiresIn);
+		localStorage.setItem("openDocTokenTimestamp", Date.now());
+		if ($('#username').val()) {
+			localStorage.setItem("openDocUser", $('#username').val());
+		} else {
+			localStorage.setItem("openDocUser", $('#username_signup').val());
+		}
+
+		clearScreenVariables();
+		showWelcomePleasantries();
+	}
+
+	var clearScreenVariables = function() {
+		$('#username').val("")
+		$('#password').val("");
+		$('#username_signup').val("");
+		$('#password_signup').val("");
+		$('#code_signup').val("");
+	}
+
+	var showWelcomePleasantries = function() {
+		// show welcome and name
+		if (localStorage.openDocUser) {
+			$('#nav-menu-username').html('Welcome, ' + localStorage.openDocUser);
+			$('#user-menu').show();
+		} else {
+			$('#nav-menu-username').html("");
+			$('#user-menu').hide();
+		}
+	}
+
+	var checkTokenExpired = function() {
+		// return boolean afer checking if the token has gone past its expiry
+		// first check if there even is a token locally
+		if (localStorage.openDocToken) {
+			// check if there's still time
+			if (Math.floor((Date.now() - localStorage.openDocTokenTimestamp)/1000) < localStorage.openDocTokenExpiryTime) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return true;
+		}
+	}
+
+	var doSignup = function() {
+		// send login request to server
+		$.ajax({
+			type: "POST",
+			url: '/api/register',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify({ username: $('#username_signup').val(), password: $('#password_signup').val(), signupCode: $('#code_signup').val()}),
+			error: function(error){
+		      console.log("Error (" + error.status + " - " + error.statusText + "): " + error.responseJSON.message);
+		      $('#signup-error-messages').html('ERROR: ' + error.responseJSON.message);
+		  },
+			success : function(data) {
+				if (data.message != undefined) {
+					// having a message means something is wrong
+					// TODO: Send a message OK as well
+					$('#signup-error-messages').html('ERROR: ' + data.message);
+					return;
+				} else {
+					setLocalStorage(data);				
+
+					// hide login screen, show the grading screen
+					showScreen('#grading-screen');
+				}
+			},
+			dataType: 'json',
+		});
+	}
+
+	var doLogin = function() {
+		// send login request to server
+		$.ajax({
+			type: "POST",
+			url: '/api/login',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify({ username: $('#username').val(), password: $('#password').val()}),
+			error: function(error){
+		      console.log("Error (" + error.status + " - " + error.statusText + "): " + error.responseJSON.message);
+		      $('#login-error-messages').html('Incorrect Username or Password');
+		  },
+			success : function(data) {
+				setLocalStorage(data);
+
+				// hide login screen, show the grading screen
+				showScreen('#grading-screen');
+			},
+			dataType: 'json',
+		});
+	}
+
+	var logOutUser = function() {
+		// clean everything up and take back to login screen
+		localStorage.removeItem("openDocToken");
+		localStorage.removeItem("openDocTokenExpiryTime");
+		localStorage.removeItem("openDocTokenTimestamp");
+		localStorage.removeItem("openDocUser");
+
+		showWelcomePleasantries();
+		showScreen('#login-screen');
+	}
+
+</script>
+</html>
