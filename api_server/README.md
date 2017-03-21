@@ -150,21 +150,100 @@ That’s it! You are now all set. You can exit this container by pressing CTRL+D
   
 ### Automated script
 
-TODO: automated the above.  
- 
+TODO: automate the above.  
+
 TODO: Clean up everything down here!!!  
 
-## Cluster deployment in Kubernetes
+## Test Docker local deployment
 
-Firstly create a Kubernetes cluster.
-* In Google Cloud Engine use:  
-`gcloud container clusters create NAME [--num-nodes=NUM_NODES; default="3"]`  
-It can be resized: `gcloud container clusters resize NAME --size=SIZE`
-* Locally you can install [minikube](https://github.com/kubernetes/minikube) and run `minikube start`.
+We have the following functionalities which can be tested:  
+  
+1. Authentication: 
+  
+**a.** To register a new account, go to a terminal and run (The signup code is CS193S)  
+  
+`curl -X POST -H "Content-Type: application/json" --data '{ "username": "USERNAME_GOES_HERE", "password":"PASSWORD_GOES_HERE", "signupCode":"CS193S"}' localhost:8080/api/register`  
+  
+If it was successful, you should get a response similar to the following on terminal:  
+`{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OGMxZDFjZGEwZTI4ZDAwMmZmYzQ5NDMiLCJpYXQiOjE0ODkwOTcxNjUsImV4cCI6MTQ4OTE0MDM2NX0.wo7wVdWTLmEc2XpiUHEfkVTcNijRVXVoduX6InJHoD4", "expiresIn":43200}`  
+  
+Great! You made a profile and got your refresh bearer token. If this part is very slow or stuck and there’s no response, then go back to the terminal running the original nodejs server (from Step 3 of the Local Setup) where you’re running the server and see if there are any error messages. You should ideally see a single line that looks like the last line here:
 
-> __Teardown reminder__  
-> `kubectl delete { po | svc | rc | deploy } --all`  
-> `gcloud container clusters delete NAME`
+
+**b.** To login, you’d run:  
+`curl -X POST -H "Content-Type: application/json" --data '{ "username": "USERNAME_GOES_HERE", "password":"PASSWORD_GOES_HERE"}' localhost:8080/api/login`  
+  
+And get a similar response with the token as with the registration.  
+  
+2. HTTP requests:  
+Now that you have a bearer token (which expires in 12 hours), you can send requests for grading images or send annotations on images (as an API call). For this, you’d run:  
+  
+**a.** Image grading requests:
+Run the following (replace the TOKEN with the token you received earlier and change the path to a local image file - to replicate our results use this [image](http://www.optometricmanagement.com/content/archive/2010/December/images/OM_December_A11_Fig01.jpg)):
+
+`curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE' -F "image=@/path/to/image.jpg" localhost:8080/api/grade`
+
+This should return the following indicating that the request was successful and you would see a similar grading output (the model classifies the image as ‘healthy’ and ‘unhealthy’). The linked image we gave was of a very unhealthy human retina - hence we see 85% predicted unhealthy!  
+  
+To send an annotation back to the server, run:  
+`curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE' -H "Content-Type: application/json" --data '{"username":"USERNAME_GOES_HERE", "annotation":{"x":1,"y":2}}' localhost:8080/api/annotation`  
+  
+You should see simply `{"message":"Annotation received."}`. Through the steps described earlier, you can go to the postgres database and verify that the annotation was received properly in the relation “annotations” in the database “opendoc”. If you had left the terminal open from the “Local Setup” Step 6 earlier, you can run the sql query `select * from annotations;` to see this annotation in the database.
+
+## Kubernetes infrastructure deployment
+*Clone the project git repository if you haven’t done it yet and make sure you are in the main folder, i.e. code-scale-image-api-server/ of the repository - master branch)*
+  
+At the beginning you can decided between the following two options:  
+
+### 1. Minikube - local 🖥
+Running Kubernetes locally by [installing](https://github.com/kubernetes/minikube) it first and then launching minikube using `minikube start`.
+
+### 2. Google Cloud Platform - cloud 🌬☁️
+Running in production on our Google Cloud Platform project.
+
+---
+
+Then you can use the **control.sh** script in code-scale-image-api-server independently of your previous choice.  
+**Note:** The options 1.start_all and 3.stop_all are related to a cluster on gcloud, so do not select that if you’re testing locally on minikube.
+
+  
+Only for the latter (GCP), check on the Google Cloud Container Engine > Container Cluster webpage if a cluster is already running (confirm with the rest of the team at the #containers-feed channel on Slack) and if not here’s how to create one (**Note:** Skip the next command if you have minikube running):  
+
+```
+./control.sh
+1. start_all (this command would create a cluster and start all the kubernetes processes)
+```
+_Make yourself a cup of tea, it is going to take a while...☕️_
+
+If you are running minikube, use:
+```
+./control.sh
+2. start_processes
+```
+
+We suggest keeping some shell windows open in order to monitor what’s happening using:  
+`watch -n 0.3 kubectl get ( po | svc | deploy )`  
+  
+**GCP Teardown reminder**  
+Step by step:  
+```
+kubectl delete { po | svc | rc | deploy } --all
+gcloud container clusters delete NAME
+```
+Automated:  
+```
+./control.sh
+3. stop_all
+```
+
+**Minikube Teardown**  
+Automated:  
+```
+./control.sh
+4. stop_processes
+
+minikube stop
+```
 
 ### Public images
 
@@ -172,15 +251,15 @@ Kubernetes needs public images (either in docker-hub or in the Google Container 
 
 #### Docker hub
 
-In the following steps I will describe how to push a local image to docker-hub. You can either create your own account and follow along or directly find the resulting images at __mmmarco/api_server:1.0__
+In the following steps I will describe how to push a local image to docker-hub. You can either create your own account and follow along or directly find the latest images at [cloud.docker.com/cs193s](https://cloud.docker.com/swarm/cs193s/repository/list).
 
-1. Build a docker image locally, as shown in _Local Deployment > Step by Step_
+1. Build a docker image locally
 2. Tag the image: `docker tag <local-image-id> <docker-hub-username>/<image>:<tag>`
 3. Push it to docker-hub: `docker push <docker-hub-username>/<image>:<tag>`
 
-#### Google Container Engine Registry (GCER)
+#### Google Container Engine Registry (GKE Registry)
 
-In the following steps I will describe how to push a local image to the GCER of your project.
+Another approach could be pushing your local images to the GCE Registry of your project.
 
 1. Make sure your gcloud client is set up correctly: `gcloud info`
 2. Tag the image: `docker tag <local-image-id> gcr.io/<your-project-id>/<image>:<tag>`
@@ -188,16 +267,22 @@ In the following steps I will describe how to push a local image to the GCER of 
 
 Reference: [https://cloud.google.com/container-registry/docs/pushing](https://cloud.google.com/container-registry/docs/pushing)
 
-### Running on Kubernetes
+##### Current images options:
+| SERVICE           | IMAGE TAG BASE NAME | PRIVATE IMAGES | CI PUSH | CI TESTS | SLACK INTEGRATION | BUILD TIME |
+| ----------------- |:-------------------:|:----------------:|:--------:|:--------:|:-----------------:|-----------:|
+| Cloud Docker | cs193s/ | premium 💸 | ✅ | ✅ | ✅ | ~ 4-7 mins |
+| GKE | gcr.io/medical-image-grading-api | ✅ | ✅ | ❌ | ❌ | ~ 3 mins |
 
-#### Step by step
+### Kubernetes processes
+
+#### Manual
 
 ##### The Imperative Way
 
 The imperative way is usually the one you use to try out things and get to a working system. You manually tweak it and at some point it is to your liking. However, if you keep on using this imperative style for deploying and managing your software you will encounter several problems (even if you automate the steps).  
   
 From the images created in the previous sections we can create containers run inside Kubernetes pod be by the following command: `kubectl run <deploy-name> --image=<image>:<tag> --port=80`.  
-For example: `kubectl run api-pod --image=mmmarco/api_server:1.0 --port=80`
+For example: `kubectl run api-pod --image=cs193s/api_server:test --port=80`
 
 ##### The Declarative Way
 
@@ -205,40 +290,50 @@ The declarative way on the other hand, is what you should come up with once you 
 
 1. `kubectl create -f kubernetes/db.yml`
 2. `kubectl create -f kubernetes/web.yml`
+3. `kubectl create -f kubernetes/grade.yml`
 
 Reference: [https://www.youtube.com/watch?v=NrzrpyMLWes](https://www.youtube.com/watch?v=NrzrpyMLWes)
 
 #### Automated script
 
-This script automates all the above mentioned steps.
-* Make sure that you don't already have a running cluster called cl1.
-* Launch `./cluster.start.sh`
-
-The script will run points 1,2,3,4 in [Tests > Kubernetes](#kubernetes).
+This script automates all the above mentioned steps.  
+* Make sure that your kubernetes processes are not already running. (check using `kubectl get ( po | svc | deploy )`).  
+If that's the case run:
+```
+./control.sh
+5. restart_processes
+```
+which under the hood does the following:  
+```
+./control.sh
+4. stop_processes
+2. start_processes
+```
 
 # Tests 🛠
 
-## api_server
+## Google Cloud Platform orchestration
 
-* Test if things are up and running by navigating to localhost:8080 - you should see a cheerful, warm, welcoming message
-* You can access the mongodb shell from the running container by `docker exec -it mongo bash`
+Once you followed the ‘Kubernetes processes’ section and see the pods, services and deployments running, you can test the functionality as follow:  
 
-## Kubernetes
+1. Note down the external-ip address using:  
+```
+./control.sh
+7. get
+1. external-ip
+```
+2. Send the following curl request to the external-ip just found in order to register a new user. Note down your token for step 3:  
+```
+curl -X POST -H "Content-Type: application/json" --data '{ "username": "USERNAME_GOES_HERE", "password":"PASSWORD_GOES_HERE", "signupCode":"CS193S"}' EXTERNAL-IP:80/api/register
+```
+3. Send a grade request:  
+```
+curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE’ -F "image=@/path/to/image.extension" EXTERNAL-IP:80/api/grade
+```
 
-1. Start a Kubernetes cluster on gcloud: `gcloud container clusters create cl1`
-2. _Make yourself a cup of tea, it is going to take a while...☕️_
-3. Create mongo pod and service: `kubectl create -f kubernetes/db.yml`
-4. Create api_server pod, deploy and service: `kubectl create -f kubernetes/web.yml`
-5. When everything is up and running, look up at the web-loadbalacer external-ip: `kubectl get svc`
-6. Send a the following auth json request to that IP and receive a token in response:  
-`curl -X POST -H "Content-Type: application/json" --data '{ "username": "user1", "password":"password1", "signupCode":"CS193S"}' EXTERNAL-IP:80/api/register`
+Congratulations, you’re done!!!
 
-### Communication between api_server and mongo
-
-> __Suggestion for Mac OS X users__  
-> Open different shells (e.g. using [iTerm2](https://www.iterm2.com)) and monitor what's happening with the following commands:  
-> - Install watch using brew package manager: `brew install watch`  
-> - In different shells run: `watch -n 0.4 kubectl get {po, svc, deploy, rc}`  
+## Communication between api_server and mongo
 
 The connection between web (api_server pod) and bd (mongoDB pod) can be tested in the following way:  
 
@@ -246,6 +341,11 @@ The connection between web (api_server pod) and bd (mongoDB pod) can be tested i
 2. Access a web running pod by running: `kubectl exec -ti <pod-name> bash`
 3. Install telnet: `apt-get update && apt-install telnet`
 4. Connect to the db with the info found in 1: `telnet <db-cluster-ip> <db-port>`
+
+> __Suggestion for Mac OS X users__  
+> Open different shells (e.g. using [iTerm2](https://www.iterm2.com)) and monitor what's happening with the following commands:  
+> - Install watch using brew package manager: `brew install watch`  
+> - In different shells run: `watch -n 0.4 kubectl get {po, svc, deploy, rc}`  
 
 
 # References 🔎
