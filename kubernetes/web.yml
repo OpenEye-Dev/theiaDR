@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: mmmarco/api_server:latest
+        image: cs193s/api_server:latest
         ports:
         - containerPort: 8080
 ---

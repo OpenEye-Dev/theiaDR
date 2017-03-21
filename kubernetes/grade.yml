@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: grade
-          image: mmmarco/tf-model
+          image: cs193s/tf-model:latest
           ports:
           - containerPort: 8080
 ---
