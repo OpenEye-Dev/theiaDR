@@ -158,12 +158,12 @@
 		    <div class="col-md-10"><img id="loading-server-grade" style="width:100%; opacity:0" src="/img/loading.gif"/></div>
 	      <p style="margin-top:15px; color:red" id="grading-error-messages"></p>
 	      <h3 class="h3">Prediction: <span id="prediction" class="prediction_text"></span></h3>
-	      <table class="table table-bordered" id='gprobs'>
-		  	<tr>
-			  	<th>Healthy</th>
-			 	<th>Unhealthy</th>
-			</tr>
-		  </table>
+	      <table class="table table-bordered table-hover" id='gprobs'>
+	      	<tr>
+	      		<th>Label</th>
+	      		<th>Likelihood</th>
+	      	</tr>
+	      </table>
 	    </div>
 	</div>
 </body>
@@ -224,6 +224,12 @@
 		$('#grading-error-messages').html("");
 		$('#prediction').html("");
 		$('#loading-server-grade').css('opacity', 1);
+		// clear last row(s) probabilities table
+		var num_table_rows = $('#gprobs').children().children().length;
+		if (num_table_rows > 1) {
+			for (i = num_table_rows-1; i > 0 ; i--)
+		  $('#gprobs').children().children()[i].remove();
+		}
 
 		$.ajax({
 			type: "POST",
@@ -254,11 +260,12 @@
 						$('#prediction').html('Unhealthy');
 					}
 
-					// append the probabilities
-					if ($('#gprobs').children().children().length > 1) {
-					  $('#gprobs').children().children()[1].remove();
+					// loop over returned classes
+					for (var label in data.grade_result) {
+						$('#gprobs').append('<tr><th>' + label + '</th><td>' + Math.round(10000*data.grade_result[label], 2)/100 + '%</td></tr>');
 					}
-					$('#gprobs').append('<tr><td>' + Math.round(10000*data.healthy, 2)/100 + '%</td><td>' + Math.round(10000*data.unhealthy, 2)/100 + '%</td></tr>');
+
+					// hide the loading div
 					$('#loading-server-grade').css('opacity', 0);
 				} else {
 					$('#grading-error-messages').html('ERROR:' + data.message);
