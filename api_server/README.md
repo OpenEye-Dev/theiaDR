@@ -333,6 +333,15 @@ curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE’ -F "image=@/path/to/im
 
 Congratulations, you’re done!!!
 
+## Infrastructure load test ⚡️🚀
+
+Example using [GNU Parallel](https://www.gnu.org/software/parallel/):  
+  
+Send 4 requests using parallel
+```
+seq 4 | parallel -n0  "curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE' -F 'image=@./api_server/retina.jpg' EXTERNAL-IP:80/api/grade"
+```
+
 ## Communication between api_server and mongo
 
 The connection between web (api_server pod) and bd (mongoDB pod) can be tested in the following way:  
