@@ -1,8 +1,12 @@
 '''
-  This is a simple Flask app to test whether a tensorflow model can be served
+  This is a simple Flask app which will serve the tensorflow model
+
+  It requires the following files to be present in the same folder:
+  * labels.txt    (the newline separated list of labels)
+  * output_graph.pb   (the trained model)
 '''
 from flask import Flask, request, Response, jsonify
-import os, io, imghdr
+import os, sys, io, imghdr
 import numpy as np
 import tensorflow as tf
 from PIL import Image
@@ -17,13 +21,25 @@ def convertToJpeg(imdata):
 
 # Get the model
 # A dictionary of the list of the actual labels
-# TODO: Get this from an external pickle - which is the only thing to be updated in the future
-label_lines = {"retina": ["healthy", "unhealthy"], "flowers": ["tulips", "roses", "daisy", "sunflowers", "dandelion"]}
+# TODO: Get this from external file - which is passed with the model
+try:
+  with open('labels.txt', 'r') as f:
+    print "reading labels.."
+    label_lines = f.read().split()
+except IOError:
+  print "ERROR: labels.txt not found! Please add it to the container!"
+  sys.exit()
 
-with tf.gfile.FastGFile("output_graph.pb", 'rb') as f:
-  graph_def = tf.GraphDef()
-  graph_def.ParseFromString(f.read())
-  _ = tf.import_graph_def(graph_def, name='')
+# read in the tf model
+try:
+  with tf.gfile.FastGFile("output_graph.pb", 'rb') as f:
+    print "reading tensorflow model..."
+    graph_def = tf.GraphDef()
+    graph_def.ParseFromString(f.read())
+    _ = tf.import_graph_def(graph_def, name='')
+except IOError:
+  print "ERROR: output_graph.pb not found! Please add it to the container!"
+  sys.exit()    
 
 sess = tf.Session()
 softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
@@ -74,8 +90,7 @@ def grade():
   grade_dict = {}
 
   for node_id in top_k:
-    # TODO: Choose label_lines key from request!
-    human_string = label_lines["flowers"][node_id]
+    human_string = label_lines[node_id]
     score = predictions[0][node_id]
     grade_dict[human_string] = float(score)
 
