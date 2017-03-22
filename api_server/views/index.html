@@ -253,21 +253,21 @@
 		      $('#loading-server-grade').css('opacity', 0);
 		  },
 			success : function(data) {
+				console.log('RECEIVED:');
 				console.log(data);
 				if (data.message == 'OK') {
 					// print argmax of the grade_result to the #prediction element
 					function argMax(list) {
 						var argmax, maxval = 0.0;
 						for (var item in list) {
-							if (list.item > maxval) {
+							if (list[item] > maxval) {
 								maxval = item;
 								argmax = item;
 							}
 						}
 						return argmax;
 					}
-
-					$('#prediction').html('Healthy');
+					$('#prediction').html(argMax(data.grade_result));
 
 					// loop over returned classes
 					for (var label in data.grade_result) {
