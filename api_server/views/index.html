@@ -146,10 +146,15 @@
 	<div class="container screen hide" id="grading-screen">
 		<!-- ref: http://stackoverflow.com/questions/25092981/drag-drop-images-input-file-and-preview-before-upload -->
 		<!-- ref: http://jsfiddle.net/ELcf6/4/ -->
-		<form class="uploader col-md-8" id="image-grade-form">
-		    <h2 class="h2">click here to upload or drag your image here</h2>
-		    <img src="" id="uploaded-image-preview" />
-		    <input type="file" name="image" id="filePhoto" onchange="handleImage(this)"/>
+		<form class="col-md-8" id="image-grade-form">
+			<label class="radio-inline"><input type="radio" name="model_selected" value="retina">Retina</label>
+			<label class="radio-inline"><input type="radio" name="model_selected" value="flowers">Flowers</label>
+
+			<div class="uploader">
+			    <h2 class="h2">click here to upload or drag your image here</h2>
+			    <img src="" id="uploaded-image-preview" />
+			    <input type="file" name="image" id="filePhoto" onchange="handleImage(this)"/>
+			</div>
 		</form>
 		<div class="col-md-4">
 			<div class="col-md-2" style="margin-top:10px">
@@ -244,7 +249,8 @@
 			data: data,
 			error: function(error){
 		      console.log("Error (" + error.status + " - " + error.statusText + "): " + error.responseJSON.message);
-		      $('#grading-error-messages').html('ERROR:' + error.responseJSON.message)
+		      $('#grading-error-messages').html('ERROR:' + error.responseJSON.message);
+		      $('#loading-server-grade').css('opacity', 0);
 		  },
 			success : function(data) {
 				console.log(data);
