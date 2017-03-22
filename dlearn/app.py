@@ -16,8 +16,9 @@ def convertToJpeg(imdata):
         return f.getvalue()
 
 # Get the model
-# A list of the actual labels
-label_lines = ["healthy", "unhealthy"]
+# A dictionary of the list of the actual labels
+# TODO: Get this from an external pickle - which is the only thing to be updated in the future
+label_lines = {"retina": ["healthy", "unhealthy"], "flowers": ["tulips", "roses", "daisy", "sunflowers", "dandelion"]}
 
 with tf.gfile.FastGFile("output_graph.pb", 'rb') as f:
   graph_def = tf.GraphDef()
@@ -69,14 +70,17 @@ def grade():
   # Sort to show labels of first prediction in order of confidence
   top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
 
-  grade_dict = {'message': 'OK'}    # to be sent to indicate that everything happened alright
+  response_dict = {'message': 'OK'}    # to be sent to indicate that everything happened alright
+  grade_dict = {}
 
   for node_id in top_k:
-    human_string = label_lines[node_id]
+    # TODO: Choose label_lines key from request!
+    human_string = label_lines["flowers"][node_id]
     score = predictions[0][node_id]
     grade_dict[human_string] = float(score)
 
-  return jsonify(grade_dict)
+  response_dict["grade_result"] = grade_dict
+  return jsonify(response_dict)
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=int("8080"), debug=True)
