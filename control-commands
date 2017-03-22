@@ -19,7 +19,7 @@ cmd_exit(){
 # create_cluster
 cmd_create_cluster(){
     echo "Creating a new cluster"
-    gcloud container clusters create cl1 --num-nodes=2
+    gcloud container clusters create cl1 --num-nodes=7
 }
 
 # start_processes
@@ -30,12 +30,14 @@ cmd_start_processes(){
     
    # mongo, grade and api server
    # sleep are added in order to give time to the db to start
-   sleep 1
-   kubectl create -f db.yml
-   sleep 5
-   kubectl create -f grade.yml
    sleep 2
-   kubectl create -f web.yml
+   kubectl apply -f googlecloud_ssd.yaml
+   sleep 10
+   kubectl apply -f mongo-statefulset.yaml
+   sleep 60
+   kubectl apply -f grade.yml
+   sleep 10
+   kubectl apply -f web.yml
 
 }
 
@@ -50,6 +52,8 @@ cmd_stop_processes(){
    echo "Cleaning kubernetes processes"
 
    # Clean deploy, svc, rc and pods
+   kubectl delete statefulsets --all
+   # kubectl delete pvc -l role=mongo
    kubectl delete deploy --all
    kubectl delete svc --all
    kubectl delete rc --all
