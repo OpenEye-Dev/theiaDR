@@ -1,6 +1,12 @@
-#!/bin/bash/
-npm install
-npm install -g nodemon
+#!/bin/bash
+echo "setting environment variables for the mongodb and the tensorflow server"
 
-# run nodemon
+# first mongo
+export DB_SERVICE_HOST=$(cat /etc/hosts | grep mongo | awk {'print $1'})
+
+# tf-server
+export GRADE_SERVICE_HOST=$(cat /etc/hosts | grep tf-server | awk {'print $1'})
+export GRADE_SERVICE_PORT=8080
+
+# starting application
 nodemon

@@ -27,6 +27,7 @@ const http = require('http');
 const jwt = require('jsonwebtoken');
 const logger = require('morgan');
 const passport = require('passport');
+const path = require('path');
 
 require('./models/db');
 require('./config/passport');
@@ -51,7 +52,7 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
     // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Authorization');
 
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
@@ -62,10 +63,13 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', function(req, res) {
-  res.status(200).send('You are lost. Please contact your system administrator.');
+  // res.status(200).send('You are lost. Please contact your system administrator.');
+  res.sendFile(path.join(__dirname + '/views/index.html'));
 });
 
 app.use('/api', routesApi);
+
+app.use(express.static('static'));
 
 // [SH] Catch unauthorised errors
 app.use(function (err, req, res, next) {

@@ -39,6 +39,12 @@ module.exports.gradeImage = function(req, res) {
       return;
     }
 
+    if (!req.file) {
+      // there's no file.. something is wrong.
+      res.status(400).json({'message': 'Error! Please check the filename field and file sent.'});
+      return;
+    }
+
     // Everything went fine
     console.log('All ok with multer. Here is the req.file object:');
     console.log(req.file);

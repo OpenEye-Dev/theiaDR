@@ -2,9 +2,18 @@
   This is a simple Flask app to test whether a tensorflow model can be served
 '''
 from flask import Flask, request, Response, jsonify
-import os, io
+import os, io, imghdr
 import numpy as np
 import tensorflow as tf
+from PIL import Image
+
+ALLOWED_IMAGE_FORMATS = ['jpg', 'jpeg', 'png', 'tiff']
+
+def convertToJpeg(imdata):
+    with io.BytesIO() as f:
+        im = Image.open(imdata)
+        im.save(f, format='JPEG')
+        return f.getvalue()
 
 # Get the model
 # A list of the actual labels
@@ -31,9 +40,22 @@ def grade():
     return jsonify({'message':'Incorrect fileobject key in POST request. Use - image'})
   # Feed the image_data as input to the graph and get first prediction
   image_data = request.files.get('image')
-  # BETTER METHOD: Convert to bytearray and then to string 
-  # this is what FastGFile returns
-  image_data = str(bytearray(image_data.read()))
+
+  # check the image format for specific formats
+  # if it is not jpg, convert to it and continue
+  CURRENT_IMAGE_FORMAT = imghdr.what(image_data)
+  if not CURRENT_IMAGE_FORMAT in ALLOWED_IMAGE_FORMATS:
+    return jsonify({'message': 'Image format not allowed at present.'}), 400
+
+  # handle non-JPG image formats
+  if not CURRENT_IMAGE_FORMAT in ['jpg', 'jpeg']:
+    # convert to JPEG and pass on
+    # REF: http://stackoverflow.com/questions/31409506/python-convert-from-png-to-jpg-without-saving-file-to-disk-using-pil
+    image_data = convertToJpeg(image_data)
+  else:
+    # Convert to bytearray and then to string 
+    # this is what FastGFile returns
+    image_data = str(bytearray(image_data.read()))
 
   predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
   # Sort to show labels of first prediction in order of confidence
@@ -47,7 +69,7 @@ def grade():
   # Sort to show labels of first prediction in order of confidence
   top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
 
-  grade_dict = {}
+  grade_dict = {'message': 'OK'}    # to be sent to indicate that everything happened alright
 
   for node_id in top_k:
     human_string = label_lines[node_id]
