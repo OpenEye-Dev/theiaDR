@@ -11,7 +11,7 @@ var maxSize = 1 * 1024 * 1024;    // max file size for image
 var multer  = require('multer');
 var upload = multer({
   limits: { fileSize: maxSize }
-}).single('image');
+}).fields([{name: 'image'}, {name: 'model_selected'}]);
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 
@@ -42,15 +42,24 @@ module.exports.gradeImage = function(req, res) {
       return;
     }
 
-    if (!req.file) {
+    // parse content
+    var image_file = req.files.image[0];
+    var selected_model = req.body.model_selected;
+
+    if (!image_file) {
       // there's no file.. something is wrong.
       res.status(400).json({'message': 'Error! Please check the filename field and file sent.'});
       return;
     }
 
+    if (!selected_model) {
+      // there's no model selected.. something is wrong.
+      res.status(400).json({'message': 'Error! No model selected.'});
+      return;
+    }
+
     // Everything went fine
-    console.log('All ok with multer. Here is the req.file object:');
-    console.log(req.file);
+    console.log('All ok with multer. Selected model: ' + selected_model);
 
     var GRADE_URL = 'localhost:8080';   // this is the default case when running locally
 
@@ -78,7 +87,7 @@ module.exports.gradeImage = function(req, res) {
 
           // Now send the buffer object from multer - but need to add some extra stuff to make the request work
           // CREDITS: http://stackoverflow.com/questions/13797670/nodejs-post-request-multipart-form-data
-          form.append('image', req.file.buffer, {contentType: req.file.mimetype, filename: req.file.originalname});
+          form.append('image', image_file.buffer, {contentType: image_file.mimetype, filename: image_file.originalname});
     });
 }
 
