@@ -27,8 +27,11 @@ const connectionString = process.env.DATABASE_URL || 'postgres://annotation:anno
 module.exports.gradeImage = function(req, res) {
   /*
       This function receives an image, parses the request body using multer 
-      (which expects the image to be sent as 'uploadedImage') and will store it
-      locally and call the tensorflow server on it, which will then take over. 
+      (which expects the image to be sent as 'image') and pass it as a port
+      request to the tensorflow server on it, which will then take over. 
+
+      It will then receive the result as a JSON from the tf-server, which it
+      will forward back as the response.
 
   */
   upload(req, res, function (err) {
