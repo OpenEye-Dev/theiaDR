@@ -60,34 +60,32 @@ module.exports.gradeImage = function(req, res) {
 
     // Everything went fine
     console.log('All ok with multer. Selected model: ' + selected_model);
+    var GRADE_SERVICE_HOST = process.env['GRADE_' + selected_model.toUpperCase() + '_SERVICE_HOST'];
+    var GRADE_SERVICE_PORT = process.env['GRADE_' + selected_model.toUpperCase() + '_SERVICE_PORT'];
 
-    var GRADE_URL = 'localhost:8080';   // this is the default case when running locally
+    console.log('connecting to ' + GRADE_SERVICE_HOST + ':' + GRADE_SERVICE_PORT);
 
     // Pass the image to tensorflow and return JSON with the annotations
-     if(process.env.GRADE_SERVICE_HOST && typeof process.env.GRADE_SERVICE_HOST !== 'undefined') {
-        // this is the case where it runs in production
-        GRADE_URL = 'http://' + process.env.GRADE_SERVICE_HOST;
-        GRADE_URL += ":" + process.env.GRADE_SERVICE_PORT;
-        console.log('Grade service found in environment variables!');
-     }
-     GRADE_URL += '/grade';
+    GRADE_URL = 'http://' + GRADE_SERVICE_HOST;
+    GRADE_URL += ":" + GRADE_SERVICE_PORT;
+    GRADE_URL += '/grade';
 
-     console.log('Sending a POST request to ' + GRADE_URL);
+    console.log('Sending a POST request to ' + GRADE_URL);
 
-     var reqToBeSent = request.post(GRADE_URL, function (err, resp, body) {
-          if (err) {
-              console.log('Error send POST request to TF Server.');
-              res.status(500).json({'message':'There was an error. Please try again later.'});
-            } else {
-              res.status(200).send(body);   // just forward the result from the TF server back to the client
-            }
-          });
+    var reqToBeSent = request.post(GRADE_URL, function (err, resp, body) {
+      if (err) {
+          console.log('Error sending POST request to TF Server.');
+          res.status(500).json({'message':'There was an error. Please try again later.'});
+        } else {
+          res.status(200).send(body);   // just forward the result from the TF server back to the client
+        }
+      });
 
-          var form = reqToBeSent.form();
+      var form = reqToBeSent.form();
 
-          // Now send the buffer object from multer - but need to add some extra stuff to make the request work
-          // CREDITS: http://stackoverflow.com/questions/13797670/nodejs-post-request-multipart-form-data
-          form.append('image', image_file.buffer, {contentType: image_file.mimetype, filename: image_file.originalname});
+      // Now send the buffer object from multer - but need to add some extra stuff to make the request work
+      // CREDITS: http://stackoverflow.com/questions/13797670/nodejs-post-request-multipart-form-data
+      form.append('image', image_file.buffer, {contentType: image_file.mimetype, filename: image_file.originalname});
     });
 }
 

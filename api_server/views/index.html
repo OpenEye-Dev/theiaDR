@@ -147,8 +147,8 @@
 		<!-- ref: http://stackoverflow.com/questions/25092981/drag-drop-images-input-file-and-preview-before-upload -->
 		<!-- ref: http://jsfiddle.net/ELcf6/4/ -->
 		<form class="col-md-8" id="image-grade-form">
-			<label class="radio-inline"><input type="radio" name="model_selected" value="retina">Retina</label>
-			<label class="radio-inline"><input type="radio" name="model_selected" value="flowers">Flowers</label>
+			<label class="radio-inline"><input type="radio" name="model_selected" value="eye">Retina</label>
+			<label class="radio-inline"><input type="radio" name="model_selected" value="flower">Flowers</label>
 
 			<div class="uploader">
 			    <h2 class="h2">click here to upload or drag your image here</h2>
@@ -255,16 +255,19 @@
 			success : function(data) {
 				console.log(data);
 				if (data.message == 'OK') {
-					// check if healthy or unhealthy
-					if (data.healthy > data.unhealthy) {
-						$('#prediction').removeClass();
-						$('#prediction').addClass('predict_healthy');
-						$('#prediction').html('Healthy');
-					} else {
-						$('#prediction').removeClass();
-						$('#prediction').addClass('predict_unhealthy');
-						$('#prediction').html('Unhealthy');
+					// print argmax of the grade_result to the #prediction element
+					function argMax(list) {
+						var argmax, maxval = 0.0;
+						for (var item in list) {
+							if (list.item > maxval) {
+								maxval = item;
+								argmax = item;
+							}
+						}
+						return argmax;
 					}
+
+					$('#prediction').html('Healthy');
 
 					// loop over returned classes
 					for (var label in data.grade_result) {
