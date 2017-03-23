@@ -6,7 +6,7 @@
 
  See http://stackoverflow.com/questions/31530200/node-multer-unexpected-field
  */
-var maxSize = 1 * 1024 * 1024;    // max file size for image
+var maxSize = 20 * 1024 * 1024;    // max file size for image
 
 var multer  = require('multer');
 var upload = multer({
