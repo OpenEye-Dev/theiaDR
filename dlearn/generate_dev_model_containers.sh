@@ -10,10 +10,12 @@ for i in $( ls models ); do
   # copy Dockerfile and run docker build command
   cp Dockerfile models/$i
   cp app.py models/$i
+  cp wsgi.py models/$i
   cd models/$i
-  echo "Creating new container - " cs193s/tf-model-${i}_dev 
-  docker build -t cs193s/tf-model-${i}_dev .
+  echo "Creating new container - " cs193s/tf-model-${i} 
+  docker build -t cs193s/tf-model-${i} .
   rm app.py
+  rm/wsgi.py
   rm Dockerfile
   cd ../..
 done
