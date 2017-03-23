@@ -8,7 +8,7 @@ This server accepts POST requests for authentication (or creating an account), r
 
 ### Image grading and annotation
 
-* `/api/grade` - expects a valid bearer token and a multipart form containing image as `image`. Send using `curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE’ -F "image=@/path/to/image.extension" localhost:8080/api/grade`
+* `/api/grade` - expects a valid bearer token and a multipart form containing image as `image` and the selected model (flower or eye) as `model_selected`.
 * `/api/annotation` - send JSON with annotations along with valid bearer token.
 
 
@@ -181,7 +181,7 @@ Now that you have a bearer token (which expires in 12 hours), you can send reque
 **a.** Image grading requests:
 Run the following (replace the TOKEN with the token you received earlier and change the path to a local image file - to replicate our results use this [image](http://www.optometricmanagement.com/content/archive/2010/December/images/OM_December_A11_Fig01.jpg)):
 
-`curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE' -F "image=@/path/to/image.jpg" localhost:8080/api/grade`
+`curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE' -F "image=@/path/to/image.jpg" -F 'model_selected=eye' localhost:8080/api/grade`
 
 This should return the following indicating that the request was successful and you would see a similar grading output (the model classifies the image as ‘healthy’ and ‘unhealthy’). The linked image we gave was of a very unhealthy human retina - hence we see 85% predicted unhealthy!  
   
@@ -339,7 +339,7 @@ Example using [GNU Parallel](https://www.gnu.org/software/parallel/):  
   
 Send 4 requests using parallel
 ```
-seq 4 | parallel -n0  "curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE' -F 'image=@./api_server/retina.jpg' EXTERNAL-IP:80/api/grade"
+seq 4 | parallel -n0  "curl -X POST -H 'Authorization: Bearer TOKEN_GOES_HERE' -F 'image=@./api_server/retina.jpg' -F 'model_selected=eye' EXTERNAL-IP:80/api/grade"
 ```
 
 ## Communication between api_server and mongo
