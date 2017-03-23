@@ -15,7 +15,7 @@ for i in $( ls models ); do
   echo "Creating new container - " cs193s/tf-model-${i} 
   docker build -t cs193s/tf-model-${i} .
   rm app.py
-  rm/wsgi.py
+  rm wsgi.py
   rm Dockerfile
   cd ../..
 done
