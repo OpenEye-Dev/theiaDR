@@ -60,8 +60,8 @@ module.exports.gradeImage = function(req, res) {
 
     // Everything went fine
     console.log('All ok with multer. Selected model: ' + selected_model);
-    var GRADE_SERVICE_HOST = process.env['GRADE_' + selected_model.toUpperCase() + '_SERVICE_HOST'];
-    var GRADE_SERVICE_PORT = process.env['GRADE_' + selected_model.toUpperCase() + '_SERVICE_PORT'];
+    var GRADE_SERVICE_HOST = process.env['GRADE' + selected_model.toUpperCase() + '_SERVICE_HOST'];
+    var GRADE_SERVICE_PORT = process.env['GRADE' + selected_model.toUpperCase() + '_SERVICE_PORT'];
 
     console.log('connecting to ' + GRADE_SERVICE_HOST + ':' + GRADE_SERVICE_PORT);
 
