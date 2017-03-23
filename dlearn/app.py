@@ -23,7 +23,7 @@ def convertToJpeg(imdata):
 # A dictionary of the list of the actual labels
 # TODO: Get this from external file - which is passed with the model
 try:
-  with open('labels.txt', 'r') as f:
+  with open('/model/labels.txt', 'r') as f:
     print "reading labels.."
     label_lines = f.read().split()
 except IOError:
@@ -32,7 +32,7 @@ except IOError:
 
 # read in the tf model
 try:
-  with tf.gfile.FastGFile("output_graph.pb", 'rb') as f:
+  with tf.gfile.FastGFile("/model/output_graph.pb", 'rb') as f:
     print "reading tensorflow model..."
     graph_def = tf.GraphDef()
     graph_def.ParseFromString(f.read())
