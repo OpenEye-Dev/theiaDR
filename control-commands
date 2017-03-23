@@ -30,13 +30,21 @@ cmd_start_processes(){
     
    # mongo, grade and api server
    # sleep are added in order to give time to the db to start
+   
+   # DB
    sleep 2
-   kubectl apply -f googlecloud_ssd.yaml
+   # kubectl apply -f googlecloud_ssd.yaml
    sleep 10
-   kubectl apply -f mongo-statefulset.yaml
+   #kubectl apply -f mongo-statefulset.yaml
+   
+   kubectl apply -f db.yml   
+
    sleep 60
-   kubectl apply -f grade.yml
-   sleep 10
+   # kubectl apply -f grade.yml
+   kubectl apply -f grade/grade_eye.yml
+   sleep 3
+   kubectl apply -f grade/grade_flower.yml
+   sleep 12
    kubectl apply -f web.yml
 
 }
