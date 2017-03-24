@@ -147,8 +147,10 @@
 		<!-- ref: http://stackoverflow.com/questions/25092981/drag-drop-images-input-file-and-preview-before-upload -->
 		<!-- ref: http://jsfiddle.net/ELcf6/4/ -->
 		<form class="col-md-8" id="image-grade-form">
-			<label class="radio-inline"><input type="radio" name="model_selected" value="eye">Retina</label>
-			<label class="radio-inline"><input type="radio" name="model_selected" value="flower">Flowers</label>
+			<select name="model_selected" class="form-control">
+				<option value="eye">Retina</option>
+				<option value="flower">Flowers</option>
+			</select>
 
 			<div class="uploader">
 			    <h2 class="h2">click here to upload or drag your image here</h2>
