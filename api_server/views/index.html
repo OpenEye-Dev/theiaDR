@@ -1,5 +1,10 @@
 <html>
-
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<meta http-equiv="pragma" content="no-cache" />
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <style type="text/css">
@@ -62,10 +67,10 @@
 <body>
 	<nav class="navbar navbar-fixed-top">
 		<div class="container-fluid">
-			<div class="navbar-header">
+			<div class="navbar-header col-xs-7">
 				<a class="navbar-brand" href="#">OpenDoc</a>
 			</div>
-			<ul class="nav navbar-nav navbar-right" id="user-menu">
+			<ul class="nav navbar-nav navbar-right pull-right col-xs-5 col-md-2" id="user-menu">
 		      <li class="dropdown">
 		        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
 		        	<span id="nav-menu-username"></span><span class="caret white"></span>
@@ -159,8 +164,8 @@
 			</div>
 		</form>
 		<div class="col-md-4">
-			<div class="col-md-2" style="margin-top:10px">
-		      <button class="btn btn-default" id="sendGradeButton" onclick="doCloudGrading()" disabled="true">Grade</button>
+			<div class="col-md-12 col-xs-12" style="margin-top:10px">
+		      <button style="width:100%" class="btn btn-default" id="sendGradeButton" onclick="doCloudGrading()" disabled="true">Grade</button>
 		    </div>
 		    <div class="col-md-10"><img id="loading-server-grade" style="width:100%; opacity:0" src="/img/loading.gif"/></div>
 	      <p style="margin-top:15px; color:red" id="grading-error-messages"></p>
