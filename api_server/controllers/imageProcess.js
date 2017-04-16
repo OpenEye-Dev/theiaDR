@@ -68,13 +68,13 @@ module.exports.gradeImage = function(req, res) {
     // Pass the image to tensorflow and return JSON with the annotations
     GRADE_URL = 'http://' + GRADE_SERVICE_HOST;
     GRADE_URL += ":" + GRADE_SERVICE_PORT;
-    GRADE_URL += '/grade';
+    GRADE_URL += '/predict';
 
     console.log('Sending a POST request to ' + GRADE_URL);
 
     var reqToBeSent = request.post(GRADE_URL, function (err, resp, body) {
       if (err) {
-          console.log('Error sending POST request to TF Server.');
+          console.log('Error sending POST request to Deep Learning Server.');
           res.status(500).json({'message':'There was an error. Please try again later.'});
         } else {
           res.status(200).send(body);   // just forward the result from the TF server back to the client
