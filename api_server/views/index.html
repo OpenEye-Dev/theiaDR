@@ -153,8 +153,7 @@
 		<!-- ref: http://jsfiddle.net/ELcf6/4/ -->
 		<form class="col-md-8" id="image-grade-form">
 			<select name="model_selected" class="form-control">
-				<option value="eye">Retina</option>
-				<option value="flower">Flowers</option>
+				<option value="dr">Diabetic Retinopathy</option>
 			</select>
 
 			<div class="uploader">
@@ -262,7 +261,7 @@
 			success : function(data) {
 				console.log('RECEIVED:');
 				console.log(data);
-				if (data.message == 'OK') {
+				if (data.success == 'true') {
 					// print argmax of the grade_result to the #prediction element
 					function argMax(list) {
 						var argmax, maxval = 0.0;
