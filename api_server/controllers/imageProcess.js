@@ -68,7 +68,7 @@ module.exports.gradeImage = function(req, res) {
     // Pass the image to tensorflow and return JSON with the annotations
     GRADE_URL = 'http://' + GRADE_SERVICE_HOST;
     GRADE_URL += ":" + GRADE_SERVICE_PORT;
-    GRADE_URL += '/predict';
+    GRADE_URL += '/grade';
 
     console.log('Sending a POST request to ' + GRADE_URL);
 
