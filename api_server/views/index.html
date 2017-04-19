@@ -261,7 +261,7 @@
 			success : function(data) {
 				console.log('RECEIVED:');
 				console.log(data);
-				if (data.success == 'true') {
+				if (data.message == 'OK') {
 					// print argmax of the grade_result to the #prediction element
 					function argMax(list) {
 						var argmax, maxval = 0.0;
@@ -277,7 +277,8 @@
 
 					// loop over returned classes
 					for (var label in data.grade_result) {
-						$('#gprobs').append('<tr><th>' + label + '</th><td>' + Math.round(10000*data.grade_result[label], 2)/100 + '%</td></tr>');
+						// $('#gprobs').append('<tr><th>' + label + '</th><td>' + Math.round(10000*data.grade_result[label], 2)/100 + '%</td></tr>');
+						$('#gprobs').append('<tr><th>' + label + '</th><td>' + Math.round(10000*data.grade_result[label], 3)/10000 + '</td></tr>');
 					}
 
 					// hide the loading div
