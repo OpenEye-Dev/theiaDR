@@ -1,4 +1,20 @@
 #!/bin/bash
+echo "setting the environment variables for the node server..."
+echo -n "Please choose a secret for the JSON web token: "
+read JWT_SECRET
+export JWT_SECRET=JWT_SECRET
+
+if [ ! -f controllers/SIGNUP_CODES.txt ]; then
+	echo ""
+	echo 'Could not find file SIGNUP_CODES.txt in controllers/ folder!'
+	echo 'You will have to setup the signup code manually. '
+	echo 'Please create a new file controllers/SIGNUP_CODES.txt and'
+	echo 'add string signupcodes on each new line. Exiting...'
+	exit 0
+else
+	echo 'Found SIGNUP_CODES.txt. The codes will be printed to console when the server starts.'
+fi
+
 echo "setting environment variables for the grading server"
 
 # first mongo
