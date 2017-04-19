@@ -2,7 +2,14 @@
 var passport = require('passport');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var SIGNUP_CODES = ['CS193S'];    // TODO: Get from external file or database
+
+var fs = require("fs");
+var text = fs.readFileSync("controllers/SIGNUP_CODES.txt", "utf-8");
+var SIGNUP_CODES = text.split('\n').slice(0, -1);   // remove last element which is always an empty string
+
+console.log("Allowed signup codes are:");
+console.log(SIGNUP_CODES);
+
 
 var sendJSONresponse = function(res, status, content) {
   res.status(status);
