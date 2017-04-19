@@ -17,7 +17,7 @@ else
 fi
 
 # all ports are 8910
-export GRADEDR_SERVICE_PORT=8910
+export GRADEDR_SERVICE_PORT=8080
 
 # starting application
 if [ ! -d node_modules ]; then
