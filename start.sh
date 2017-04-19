@@ -1,6 +1,10 @@
 # Starts all the containers and mounts the api_server directory onto the api_server container
 # gives bash access to it
+
+echo 'starting mongodb container...'
 docker run --name mongo -d --rm mongo mongod
+
+echo 'starting torch container...'
 docker run --name torch-server -d --rm tswedish/actdr
 
 cd api_server
