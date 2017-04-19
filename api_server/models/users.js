@@ -2,6 +2,7 @@
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
+const MY_SECRET = process.env['JWT_SECRET'];
 
 const TOKENTIME = 12 * 60 * 60; // in seconds
 
@@ -30,7 +31,7 @@ userSchema.methods.generateJwt = function() {
   return {
       'token': jwt.sign({
       _id: this._id
-    }, "MY_SECRET", {
+    }, MY_SECRET, {
       expiresIn: TOKENTIME
     }), // DO NOT KEEP YOUR SECRET IN THE CODE!
       'expiresIn': TOKENTIME
