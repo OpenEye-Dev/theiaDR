@@ -15,6 +15,7 @@ spec:
       containers:
         - name: gradedr
           image: tswedish/actdr:latest
+          imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 8080
 ---
