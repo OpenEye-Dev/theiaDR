@@ -40,11 +40,6 @@ cmd_start_processes(){
    kubectl apply -f db.yml   
 
    sleep 60
-   # kubectl apply -f grade.yml
-   kubectl apply -f grade/grade_eye.yml
-   sleep 3
-   kubectl apply -f grade/grade_flower.yml
-   sleep 3
    kubectl apply -f grade/grade_dr.yml
    sleep 12
    kubectl apply -f web.yml
