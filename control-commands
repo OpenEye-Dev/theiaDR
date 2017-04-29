@@ -32,13 +32,12 @@ cmd_start_processes(){
    # sleep are added in order to give time to the db to start
    
    # DB
-   sleep 2
-   # kubectl apply -f googlecloud_ssd.yaml
-   sleep 10
-   #kubectl apply -f mongo-statefulset.yaml
+   sleep 12
    
    kubectl apply -f db.yml   
-
+   
+   secrets_init
+  
    sleep 60
    kubectl apply -f grade/grade_dr.yml
    sleep 12
@@ -157,4 +156,18 @@ cmd_get(){
    cmd_$CHOSEN_OPTION
 }
 
+# The file JWT_TOKEN must stay local and not be pushed to git or included in an container image.
+secrets_init(){
+   if [ -s secrets/JWT_TOKEN ]
+   then
+       # To clean cached JWT_TOKEN:
+       #  cat /dev/null > secrets/JWT_TOKEN
+       echo "Using old key stored in 'secrets/JWT_TOKEN'"
+   else
+       echo "Insert a new JWT_TOKEN. Value will be cached in 'secrets/JWT_TOKEN' and used at next restart if file not empty."
+       read new_jtw_token
+       echo $new_jtw_token > secrets/JWT_TOKEN
+   fi
+   kubectl create secret generic jwt-token --from-file=./secrets/JWT_TOKEN
+}
 # -----------------------------------------
