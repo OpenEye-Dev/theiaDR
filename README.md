@@ -1,12 +1,12 @@
 # Image Grading API for Medical Images [![npm](https://img.shields.io/npm/v/npm.svg)]() [![Docker Automated buil](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)]()
-Adapted from course Project for CS193S (Stanford University)
+Adapted from course Project for CS193S (Stanford University, Winter 2016-17)
 
 Authors: Marco Montalto Monella, Dhruv Joshi
 
 # Purpose
 We endeavour to build a highly scalable platform for Medical image grading in the cloud. This system would be engineered to scale horizontally and vertically, and in the number of services that can be provided (in this case, the system works for diabetic retinopathy images, but can be extended to other use medical cases as well (radiology).
 
-# Quickstart
+# Quickstart (local development)
 * Make sure the docker daemon is running.
 * Create a file `api_server/controllers/SIGNUP_CODES.txt` with signup codes on each new line (will be required when creating a profile on the web interface)
 * Run `./start.sh`. Follow the instructions.
